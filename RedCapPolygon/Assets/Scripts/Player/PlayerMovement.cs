@@ -4,9 +4,9 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D PlayerRigidBody2D;
-    private float movementSpeed = 5.0f;
+    private float movementSpeed = 10.0f;
     private float dashSpeed = 30.0f;
-    private float jumpForce = 15.0f;
+    private float jumpForce = 25.0f;
 
     private float originalGravityScale;
     public bool isDashing = false;

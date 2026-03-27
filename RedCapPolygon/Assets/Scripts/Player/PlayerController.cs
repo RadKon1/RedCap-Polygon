@@ -6,15 +6,14 @@ public class PlayerController : MonoBehaviour
     private PlayerMovement movement;
     private float jumpDisableDuration = 0f;
     private float dashDisableDuration = 0f;
-    private float originalGravityScale;
 
-    void Start()
+    private void Start()
     {
         // Initialize player class here...
         movement = GetComponent<PlayerMovement>();
     }
 
-    void Update()
+    private void Update()
     {
         checkMovementInput();
     }
@@ -23,7 +22,7 @@ public class PlayerController : MonoBehaviour
     {
 
         if (jumpDisableDuration > 0) { jumpDisableDuration -= Time.deltaTime; }
-        if (dashDisableDuration > 0) dashDisableDuration -= Time.deltaTime;
+        if (dashDisableDuration > 0) { dashDisableDuration -= Time.deltaTime; }
 
         if (Keyboard.current.leftShiftKey.wasPressedThisFrame && dashDisableDuration <= 0 && (Keyboard.current.aKey.isPressed || Keyboard.current.dKey.isPressed))
         {
