@@ -41,8 +41,14 @@ public class PlayerController : MonoBehaviour
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpDisableDuration <= 0)
         {
+            movement.startJump();
             movement.jump();
             jumpDisableDuration = 0.5f;
+        }
+
+        if (jumpDisableDuration <= 0 && movement.isAirborne)
+        {
+            movement.endJump();
         }
 
         if (dashDisableDuration <= 0)
