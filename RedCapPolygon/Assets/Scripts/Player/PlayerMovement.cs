@@ -85,7 +85,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void SetAnimatorMovement(Vector2 direction)
     {
-        animator.SetFloat("xDir", direction.x);
+        if (direction.x != 0)
+        {
+            animator.SetBool("isRunning", true);
+            animator.SetFloat("xDir", direction.x);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
     }
 
 }

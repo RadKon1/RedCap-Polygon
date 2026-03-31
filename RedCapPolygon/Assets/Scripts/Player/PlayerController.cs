@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private PlayerMovement movement;
+    private PlayerCombat combat;
     private float jumpDisableDuration = 0f;
     private float dashDisableDuration = 0f;
 
@@ -11,11 +12,13 @@ public class PlayerController : MonoBehaviour
     {
         // Initialize player class here...
         movement = GetComponent<PlayerMovement>();
+        combat = GetComponent<PlayerCombat>();
     }
 
     private void Update()
     {
         checkMovementInput();
+        checkAttackInput();
     }
 
     private void checkMovementInput()
@@ -68,4 +71,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void checkAttackInput()
+    {
+        if (Keyboard.current.jKey.wasPressedThisFrame)
+        {
+            combat.lightAttack();
+        }
+        else if (Keyboard.current.kKey.wasPressedThisFrame)
+        {
+            combat.heavyAttack();
+        }
+    }
 }
