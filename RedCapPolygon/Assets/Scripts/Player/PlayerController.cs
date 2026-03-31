@@ -73,7 +73,11 @@ public class PlayerController : MonoBehaviour
 
     private void checkAttackInput()
     {
-        if (Keyboard.current.jKey.wasPressedThisFrame)
+        if (Keyboard.current.jKey.wasPressedThisFrame && dashDisableDuration > 0)
+        {
+            combat.dashAttack();
+        }
+        else if (Keyboard.current.jKey.wasPressedThisFrame)
         {
             combat.lightAttack();
         }

@@ -3,7 +3,9 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour
 {
     private Animator animator;
-    [SerializeField] private float attackCooldown = 0.5f;
+    [SerializeField] private float lightAttackCooldown = 0.5f;
+    [SerializeField] private float dashAttackCooldown = 1f;
+    [SerializeField] private float heavyAttackCooldown = 2f;
     private float nextAttackTime = 0f;
 
     private void Awake()
@@ -15,7 +17,7 @@ public class PlayerCombat : MonoBehaviour
         if (Time.time < nextAttackTime) { return; }
 
         // Trigger light attack animation here...
-        nextAttackTime = Time.time + attackCooldown;
+        nextAttackTime = Time.time + lightAttackCooldown;
         Debug.Log("Light attack.");
     }
 
@@ -24,7 +26,16 @@ public class PlayerCombat : MonoBehaviour
         if (Time.time < nextAttackTime) { return; }
 
         // Trigger heavy attack animation here...
-        nextAttackTime = Time.time + attackCooldown;
+        nextAttackTime = Time.time + heavyAttackCooldown;
         Debug.Log("Heavy attack.");
+    }
+
+    public void dashAttack()
+    {
+        if (Time.time < nextAttackTime) { return; }
+
+        // Trigger dash attack animation here...
+        nextAttackTime = Time.time + dashAttackCooldown;
+        Debug.Log("dash attack.");
     }
 }
