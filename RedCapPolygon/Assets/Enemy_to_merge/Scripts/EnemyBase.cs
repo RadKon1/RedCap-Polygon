@@ -21,9 +21,6 @@ public class EnemyBase : MonoBehaviour
     private float _time = 0f;
     private float _direction = 1f;
     private float _rayLenght = 0.05f;
-    private bool isDead;
-    private bool isAttacking;
-    private bool onCooldown;
     private bool isGrounded;
 
     void Awake()
@@ -32,6 +29,11 @@ public class EnemyBase : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
         groundMask = LayerMask.GetMask("Ground");
+        
+        _direction = Random.Range(-1, 1);
+        if (_direction == 0)
+            _direction = 1;
+        Rotate();
     }
     
     void Update()
@@ -44,7 +46,6 @@ public class EnemyBase : MonoBehaviour
         }
         WallCheck();
         EdgeCheck();
-        Debug.Log("Moving");
         Move();
     }
 
@@ -57,22 +58,21 @@ public class EnemyBase : MonoBehaviour
     {
         if (_direction > 0)
         {
-            transform.localScale = new Vector3(Mathf.Abs(_direction), 2, 1);
+            transform.localScale = new Vector3(Mathf.Abs(_direction), transform.localScale.y, transform.localScale.z);
         }
         else if (_direction < 0)
         {
-            transform.localScale = new Vector3(-Mathf.Abs(_direction), 2, 1);
+            transform.localScale = new Vector3(-Mathf.Abs(_direction), transform.localScale.y, transform.localScale.z);
         }
     }
 
     void Attack()
     {
-        // Placeholder
-        isAttacking = true;
+        // PlaceHolder
     }
     void TakeDamage(int damage)
     {
-        // Placeholder
+        // PlaceHolder
         health -= damage;
     }
 
@@ -92,7 +92,6 @@ public class EnemyBase : MonoBehaviour
         Debug.DrawRay(lOrigin, Vector2.down * _rayLenght, Color.darkRed);
         Debug.DrawRay(rOrigin, Vector2.down * _rayLenght, Color.darkRed);
         isGrounded = cRc.collider != null || lRc.collider != null || rRc.collider != null;
-        Debug.Log(isGrounded);
     }
 
     void WallCheck()
@@ -118,9 +117,6 @@ public class EnemyBase : MonoBehaviour
     }
     void OnDrawGizmos()
     {
-        if (_frontWallCheckPos == null || _edgeCheckPos == null)
-            return;
-
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(_frontWallCheckPos, _boxWallScale);
         Gizmos.DrawWireCube(_edgeCheckPos, _boxEdgeScale);
