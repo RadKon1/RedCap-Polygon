@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private float jumpForce = 6.25f;
 
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform attackPoint;
     private float raycastLength = 0.2f;
 
     private Vector2 slopeNormalPerpendicular;
@@ -129,9 +130,9 @@ public class PlayerMovement : MonoBehaviour
         PlayerRigidBody2D.linearVelocity = new Vector2(0f, PlayerRigidBody2D.linearVelocity.y);
     }
 
+
     private void SetAnimatorMovement(Vector2 direction)
     {
-
         animator.SetFloat("speed", Mathf.Abs(direction.x));
 
         if (Mathf.Abs(direction.x) > 0.01f)
