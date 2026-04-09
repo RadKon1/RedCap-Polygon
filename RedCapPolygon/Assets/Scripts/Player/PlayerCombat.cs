@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerCombat : MonoBehaviour
 {
     private Animator animator;
+    // attack speed - might change based on weapon or player stats, but for hardcoded.
     [SerializeField] private float lightAttackCooldown = 0.5f;
     [SerializeField] private float dashAttackCooldown = 1f;
     [SerializeField] private float heavyAttackCooldown = 2f;
