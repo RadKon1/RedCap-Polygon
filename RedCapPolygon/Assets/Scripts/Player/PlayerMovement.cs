@@ -5,12 +5,14 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D PlayerRigidBody2D;
     private Animator animator;
+    private PlayerCombat playerCombat;
     private float movementSpeed = 1.5f;
     private float dashSpeed = 5.0f;
     private float jumpForce = 6.25f;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackOffset;
     private float raycastLength = 0.2f;
 
     private Vector2 slopeNormalPerpendicular;
@@ -23,7 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         PlayerRigidBody2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
+        playerCombat = GetComponent<PlayerCombat>();
     }
 
     private void Update()
@@ -70,12 +73,16 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayerRigidBody2D.linearVelocity = new Vector2(-movementSpeed, PlayerRigidBody2D.linearVelocity.y);
 
+        playerCombat.attackPoint.localPosition = new Vector3(-attackOffset, 0, 0);
+
         SetAnimatorMovement(new Vector2(-1, 0));
     }
 
     public void moveRight()
     {
         PlayerRigidBody2D.linearVelocity = new Vector2(movementSpeed, PlayerRigidBody2D.linearVelocity.y);
+
+        playerCombat.attackPoint.localPosition = new Vector3(attackOffset, 0, 0);
 
         SetAnimatorMovement(new Vector2(1, 0));
     }
