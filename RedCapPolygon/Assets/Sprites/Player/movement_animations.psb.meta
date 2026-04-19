@@ -1,0 +1,540 @@
+fileFormatVersion: 2
+guid: d1cf63f98b762864c8aa65d48fd3755e
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b2a9591990af98743ba3ff7cf1000886, type: 3}
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 1
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+    swizzle: 50462976
+    isReadable: 0
+    streamingMipmaps: 0
+    streamingMipmapsPriority: 0
+    vTOnly: 0
+    ignoreMipmapLimit: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationDetail: -1
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    flipbookRows: 0
+    flipbookColumns: 0
+    ignorePngGamma: 0
+    cookieMode: 0
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+    applyGammaDecoding: 0
+  singleSpriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: ed2ce9bb21968f5478fb75fa31c133fe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+    spritePosition: {x: 0, y: 0}
+  multiSpriteImportData: []
+  layeredSpriteImportData:
+  - name: Warstwa 1
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1174
+      y: 4
+      width: 170
+      height: 730
+    spriteID: feaaed46cd96cf2488f96caa907db1b4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1174, y: 4}
+    spritePosition: {x: 1886, y: 1387}
+  - name: Warstwa 2
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1174
+      y: 1480
+      width: 134
+      height: 548
+    spriteID: a0146808dc3e912429666283ea0b6164
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1174, y: 1480}
+    spritePosition: {x: 1624, y: 1536}
+  - name: Warstwa 3
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 574
+      height: 930
+    spriteID: bb42794266a3f2949a9ea1f8d9f772b1
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+    spritePosition: {x: 829, y: 1455}
+  - name: Warstwa 4
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 586
+      y: 4
+      width: 580
+      height: 660
+    spriteID: b868a5dbd730e1c4aa6b6a6799fa5c04
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 586, y: 4}
+    spritePosition: {x: 829, y: 727}
+  - name: Warstwa 5
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1497
+      width: 434
+      height: 203
+    spriteID: 122a2f3552843784fbf1fecb51a30363
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1497}
+    spritePosition: {x: 612, y: 166}
+  - name: Warstwa 6
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1708
+      width: 434
+      height: 203
+    spriteID: 9020cc41723942f4d97e09650889a413
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1708}
+    spritePosition: {x: 81, y: 166}
+  - name: Warstwa 7
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 586
+      y: 672
+      width: 225
+      height: 812
+    spriteID: 77a897ee9316eb64682de4452400a0c5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 586, y: 672}
+    spritePosition: {x: 500, y: 465}
+  - name: Warstwa 8
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 819
+      y: 672
+      width: 225
+      height: 812
+    spriteID: 719893924ac329d4c83e62071d4f3270
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 819, y: 672}
+    spritePosition: {x: 171, y: 465}
+  - name: Warstwa 9
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 586
+      y: 1492
+      width: 134
+      height: 548
+    spriteID: 57c4c39d6896e3e4b8eb646767cab93a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 586, y: 1492}
+    spritePosition: {x: 515, y: 1569}
+  - name: Warstwa 10
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1174
+      y: 742
+      width: 170
+      height: 730
+    spriteID: de3e881302b0c9a44a523a2d026ce434
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1174, y: 742}
+    spritePosition: {x: 81, y: 1387}
+  - name: Warstwa 11
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 942
+      width: 558
+      height: 547
+    spriteID: bff107d8c2ebdd3458b0efacc0228a59
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 942}
+    spritePosition: {x: 132, y: 2385}
+  - name: Layer 1
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1174
+      y: 2036
+      width: 1
+      height: 1
+    spriteID: 51e185543795f1943b05b81ace0286c4
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1174, y: 2036}
+    spritePosition: {x: 1885, y: 465}
+  spriteImportData: []
+  rigSpriteImportData: []
+  sharedRigSpriteImportData: []
+  mosaicSpriteImportData: []
+  sharedRigCharacterData:
+    bones: []
+    parts: []
+    dimension: {x: 0, y: 0}
+    characterGroups: []
+    pivot: {x: 0, y: 0}
+    boneReadOnly: 0
+  characterData:
+    bones: []
+    parts: []
+    dimension: {x: 0, y: 0}
+    characterGroups: []
+    pivot: {x: 0, y: 0}
+    boneReadOnly: 0
+  platformSettings: []
+  mosaicLayers: 1
+  characterMode: 1
+  documentPivot: {x: 0, y: 0}
+  documentAlignment: 7
+  importHiddenLayers: 0
+  layerMappingOption: 2
+  generatePhysicsShape: 0
+  paperDollMode: 0
+  keepDupilcateSpriteName: 1
+  generateTileAssets: 0
+  tilePaletteCellLayout: 0
+  tilePaletteHexagonLayout: 0
+  tilePaletteCellSize: {x: 1, y: 1, z: 0}
+  tilePaletteCellSizing: 0
+  transparencySortMode: 0
+  transparencySortAxis: {x: 0, y: 0, z: 1}
+  tileTemplate: {instanceID: 0}
+  padding: 4
+  spriteSizeExpand: 0
+  skeletonAssetReferenceID: 
+  pipeline: {instanceID: 0}
+  pipelineVersion: 
+  spriteCategoryList:
+    categories: []
+  spritePackingTag: 
+  resliceFromLayer: 0
+  pSDLayerImportSetting: []
+  psdLayers:
+  - name: Warstwa 1
+    spriteName: Warstwa 1
+    isGroup: 0
+    parentIndex: -1
+    spriteID: feaaed46cd96cf2488f96caa907db1b4
+    layerID: 4
+    mosaicPosition: {x: 1174, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 2
+    spriteName: Warstwa 2
+    isGroup: 0
+    parentIndex: -1
+    spriteID: a0146808dc3e912429666283ea0b6164
+    layerID: 5
+    mosaicPosition: {x: 1174, y: 1480}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 3
+    spriteName: Warstwa 3
+    isGroup: 0
+    parentIndex: -1
+    spriteID: bb42794266a3f2949a9ea1f8d9f772b1
+    layerID: 6
+    mosaicPosition: {x: 4, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 4
+    spriteName: Warstwa 4
+    isGroup: 0
+    parentIndex: -1
+    spriteID: b868a5dbd730e1c4aa6b6a6799fa5c04
+    layerID: 7
+    mosaicPosition: {x: 586, y: 4}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 5
+    spriteName: Warstwa 5
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 122a2f3552843784fbf1fecb51a30363
+    layerID: 8
+    mosaicPosition: {x: 4, y: 1497}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 6
+    spriteName: Warstwa 6
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 9020cc41723942f4d97e09650889a413
+    layerID: 9
+    mosaicPosition: {x: 4, y: 1708}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 7
+    spriteName: Warstwa 7
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 77a897ee9316eb64682de4452400a0c5
+    layerID: 10
+    mosaicPosition: {x: 586, y: 672}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 8
+    spriteName: Warstwa 8
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 719893924ac329d4c83e62071d4f3270
+    layerID: 11
+    mosaicPosition: {x: 819, y: 672}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 9
+    spriteName: Warstwa 9
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 57c4c39d6896e3e4b8eb646767cab93a
+    layerID: 12
+    mosaicPosition: {x: 586, y: 1492}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 10
+    spriteName: Warstwa 10
+    isGroup: 0
+    parentIndex: -1
+    spriteID: de3e881302b0c9a44a523a2d026ce434
+    layerID: 13
+    mosaicPosition: {x: 1174, y: 742}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Warstwa 11
+    spriteName: Warstwa 11
+    isGroup: 0
+    parentIndex: -1
+    spriteID: bff107d8c2ebdd3458b0efacc0228a59
+    layerID: 14
+    mosaicPosition: {x: 4, y: 942}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Layer 1
+    spriteName: Layer 1
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 51e185543795f1943b05b81ace0286c4
+    layerID: 2
+    mosaicPosition: {x: 1174, y: 2036}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  mosaicPSDLayers: []
+  rigPSDLayers: []
+  sharedRigPSDLayers: []
+  importFileNodeState: 1
+  platformSettingsDirtyTick: 0
+  spriteSizeExpandChanged: 0
+  generateGOHierarchy: 0
+  textureAssetName: 
+  prefabAssetName: 
+  spriteLibAssetName: 
+  skeletonAssetName: 
+  secondarySpriteTextures: []
