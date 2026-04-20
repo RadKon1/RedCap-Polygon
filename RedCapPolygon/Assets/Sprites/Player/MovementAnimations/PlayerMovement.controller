@@ -241,7 +241,7 @@ AnimatorStateMachine:
     m_State: {fileID: 4349177668241150701}
     m_Position: {x: 250, y: 540, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 6769437428134400918}
+    m_State: {fileID: 7132236698351845042}
     m_Position: {x: 285, y: 605, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
@@ -319,14 +319,14 @@ BlendTree:
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 0
---- !u!1102 &6769437428134400918
+--- !u!1102 &7132236698351845042
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player_Walk_Left
+  m_Name: Egyptian_Idle_Left
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -339,7 +339,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 69dee0195344db342bc223fa4bfc4767, type: 2}
+  m_Motion: {fileID: 7400000, guid: e371bb53a5dceb44db85853d15d5590d, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
