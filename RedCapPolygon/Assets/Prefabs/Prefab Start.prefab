@@ -143,8 +143,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.2118912, g: 0.79622644, b: 0.10065503, a: 1}
+  m_Sprite: {fileID: 1359255511587730308, guid: 00af2a8d82807e347ac9773e96589689, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -184,7 +184,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1629823012548446291}
-  - {fileID: 2749305029565398887}
+  - {fileID: 1862239118743825604}
   - {fileID: 5502440023989916985}
   - {fileID: 3527622928023163893}
   - {fileID: 8831189812761427834}
@@ -209,16 +209,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomController
   doorMappings:
-  - direction: {x: -1, y: 0}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: -1, y: 0}
     solidWall: {fileID: 2603025244800198130}
     doorOpening: {fileID: 5008623406413074230}
-  - direction: {x: 1, y: 0}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: 1, y: 0}
     solidWall: {fileID: 5052181083570222503}
     doorOpening: {fileID: 7660559441502036631}
-  - direction: {x: 0, y: -1}
-    solidWall: {fileID: 2937479764170675564}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: 0, y: -1}
+    solidWall: {fileID: 0}
     doorOpening: {fileID: 6400197629112273463}
-  - direction: {x: 0, y: 1}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: 0, y: 1}
     solidWall: {fileID: 7655630129529150928}
     doorOpening: {fileID: 7183491963495748156}
 --- !u!1001 &333730643921177928
@@ -556,7 +560,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3323265102702948073, guid: e44c4382b9bd47b459a683ca5d532595, type: 3}
   m_PrefabInstance: {fileID: 4909168829073158969}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &7174180329250992908
+--- !u!1001 &6661017606572925103
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -613,15 +617,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4161e75f27de44746b9da1601ca5b115, type: 3}
---- !u!4 &2749305029565398887 stripped
+--- !u!4 &1862239118743825604 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5019456003627355243, guid: 4161e75f27de44746b9da1601ca5b115, type: 3}
-  m_PrefabInstance: {fileID: 7174180329250992908}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2937479764170675564 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5425650866714781280, guid: 4161e75f27de44746b9da1601ca5b115, type: 3}
-  m_PrefabInstance: {fileID: 7174180329250992908}
+  m_PrefabInstance: {fileID: 6661017606572925103}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8581209965652380198
 PrefabInstance:

@@ -56,16 +56,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomController
   doorMappings:
-  - direction: {x: -1, y: 0}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: -1, y: 0}
     solidWall: {fileID: 429714394090585097}
     doorOpening: {fileID: 9204521565523866972}
-  - direction: {x: 1, y: 0}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: 1, y: 0}
     solidWall: {fileID: 8431642069385634555}
     doorOpening: {fileID: 2296439678003169564}
-  - direction: {x: 0, y: -1}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: 0, y: -1}
     solidWall: {fileID: 7262527591936660281}
     doorOpening: {fileID: 5171503297194012381}
-  - direction: {x: 0, y: 1}
+  - localOffset: {x: 0, y: 0}
+    direction: {x: 0, y: 1}
     solidWall: {fileID: 9029291690642002193}
     doorOpening: {fileID: 3755350119183676606}
 --- !u!1 &8273060639863942912
@@ -180,8 +184,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5928017, g: 0.98490566, b: 0.9435581, a: 1}
+  m_Sprite: {fileID: 1359255511587730308, guid: 00af2a8d82807e347ac9773e96589689, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

@@ -6,6 +6,9 @@ public class RoomController : MonoBehaviour
     [System.Serializable]
     public struct DoorMapping
     {
+        [Tooltip("Position of cell in the whole room (mainly for Boss purposes)")]
+        public Vector2Int localOffset;
+
         [Tooltip("Direction (eg. X:0, Y:1 for UP)")]
         public Vector2Int direction;
 
@@ -19,7 +22,7 @@ public class RoomController : MonoBehaviour
     [Header("Door Configuration")]
     public DoorMapping[] doorMappings;
 
-    public void Initialize(List<Vector2Int> availableDoors)
+    public void Initialize(List<DoorConnection> availableDoors)
     {
         foreach (DoorMapping doorMapping in doorMappings)
         {
@@ -32,11 +35,11 @@ public class RoomController : MonoBehaviour
                 doorMapping.doorOpening.SetActive(false);
             }
         }
-        foreach (Vector2Int doorDir in availableDoors)
+        foreach (DoorConnection door in availableDoors)
         {
             foreach (DoorMapping mapping in doorMappings)
             {
-                if (mapping.direction == doorDir)
+                if (mapping.direction == door.direction && mapping.localOffset == door.localOffset)
                 {
                     if (mapping.solidWall != null) mapping.solidWall.SetActive(false);
                     if (mapping.doorOpening != null) mapping.doorOpening.SetActive(true);

@@ -10,14 +10,20 @@ public enum RoomType
     Boss
 }
 
+[System.Serializable]
+public struct DoorConnection
+{
+    public Vector2Int localOffset;
+    public Vector2Int direction;
+}
+
 public class GridNode
 {
     public Vector2Int GridPosition;
     public RoomType Type;
     public Vector2Int OriginPosition;
     public bool IsOrigin;
-
-    public List<Vector2Int> AvailableDoors;
+    public List<DoorConnection> AvailableDoors;
 
     public GridNode(Vector2Int position, RoomType type, Vector2Int origin, bool isOrigin)
     {
@@ -25,7 +31,7 @@ public class GridNode
         Type = type;
         OriginPosition = origin;
         IsOrigin = isOrigin;
-        AvailableDoors = new List<Vector2Int>();
+        AvailableDoors = new List<DoorConnection>();
     }
 }
 
@@ -67,9 +73,9 @@ public class GridLevelGeneration : MonoBehaviour
     private readonly Dictionary<Vector2Int, int> directionWeights = new Dictionary<Vector2Int, int>
     {
         [Vector2Int.right] = 75,
-        [Vector2Int.down] = 35,
-        [Vector2Int.up] = 10,
-        [Vector2Int.left] = 5
+        [Vector2Int.down] = 10,         //35
+        [Vector2Int.up] = 0,
+        [Vector2Int.left] = 0          //10
     };
     private readonly Vector2Int[] directions = {
         Vector2Int.up,    // (0, 1)
@@ -277,7 +283,13 @@ public class GridLevelGeneration : MonoBehaviour
                     GridNode neighbourNode = levelMap[neighbourPos];
                     if (currentNode.OriginPosition != neighbourNode.OriginPosition)
                     {
-                        currentNode.AvailableDoors.Add(direction);
+                        Vector2Int offset = currentPos - currentNode.OriginPosition;
+                        GridNode originNode = levelMap[currentNode.OriginPosition];
+                        originNode.AvailableDoors.Add(new DoorConnection
+                        {
+                            localOffset = offset,
+                            direction = direction
+                        });
                     }
                 }
             }
