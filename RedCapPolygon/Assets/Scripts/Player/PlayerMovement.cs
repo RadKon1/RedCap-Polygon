@@ -76,8 +76,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (playerCombat != null && playerCombat.attackPoint != null)
             playerCombat.attackPoint.localPosition = new Vector3(-attackOffset, 0, 0);
-        transform.localScale = new Vector3(1, 1, 1);
-        SetAnimatorMovement(new Vector2(-1, 0));
+
+        // Obracamy w lewo: Skala X na -1 (lub 1, zależy jak narysowałeś bazowo)
+        transform.localScale = new Vector3(-1, 1, 1);
+
+        animator.SetFloat("speed", 1f);
     }
 
     public void moveRight()
@@ -88,15 +91,16 @@ public class PlayerMovement : MonoBehaviour
         if (playerCombat != null && playerCombat.attackPoint != null)
             playerCombat.attackPoint.localPosition = new Vector3(attackOffset, 0, 0);
 
-        transform.localScale = new Vector3(-1, 1, 1);
-        SetAnimatorMovement(new Vector2(1, 0));
+        // Obracamy w prawo: Skala X na 1
+        transform.localScale = new Vector3(1, 1, 1);
+
+        animator.SetFloat("speed", 1f);
     }
 
     public void stopMoving()
     {
         PlayerRigidBody2D.linearVelocity = new Vector2(0f, PlayerRigidBody2D.linearVelocity.y);
         animator.SetFloat("speed", 0f);
-        animator.SetFloat("xDir", lastDirX);
     }
 
     public void jump()
@@ -105,7 +109,6 @@ public class PlayerMovement : MonoBehaviour
         PlayerRigidBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
         // Animator Update
-        animator.SetFloat("xDir", lastDirX);
         animator.SetBool("isAirborne", true);
 
         Debug.Log("Jumping.");
@@ -149,14 +152,5 @@ public class PlayerMovement : MonoBehaviour
     private void SetAnimatorMovement(Vector2 direction)
     {
         animator.SetFloat("speed", Mathf.Abs(direction.x));
-
-        if (Mathf.Abs(direction.x) > 0.01f)
-        {
-            animator.SetFloat("xDir", direction.x);
-        }
-        else
-        {
-            animator.SetFloat("xDir", lastDirX);
-        }
     }
 }
