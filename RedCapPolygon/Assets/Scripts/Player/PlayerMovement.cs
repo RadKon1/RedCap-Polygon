@@ -24,11 +24,14 @@ public class PlayerMovement : MonoBehaviour
     public bool isAirborne = false;
     public bool onStairs = false;
 
+    private Vector3 savedScale;
+
     private void Awake()
     {
         PlayerRigidBody2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         playerCombat = GetComponent<PlayerCombat>();
+        savedScale = transform.localScale;
     }
 
     private void Update()
@@ -75,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         if (playerCombat != null && playerCombat.attackPoint != null)
             playerCombat.attackPoint.localPosition = new Vector3(-attackOffset, 0, 0);
 
-        transform.localScale = new Vector3(-1, 1, 1);
+        transform.localScale = new Vector3(-savedScale.x, savedScale.y, savedScale.z);
 
         animator.SetFloat("speed", 1f);
     }
@@ -87,8 +90,7 @@ public class PlayerMovement : MonoBehaviour
         if (playerCombat != null && playerCombat.attackPoint != null)
             playerCombat.attackPoint.localPosition = new Vector3(attackOffset, 0, 0);
 
-        // Obracamy w prawo: Skala X na 1
-        transform.localScale = new Vector3(1, 1, 1);
+        transform.localScale = new Vector3(savedScale.x, savedScale.y, savedScale.z);
 
         animator.SetFloat("speed", 1f);
     }
