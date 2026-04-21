@@ -19,7 +19,6 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 slopeNormalPerpendicular;
     private float originalGravityScale;
-    private float lastDirX = -1f;
 
     public bool isDashing = false;
     public bool isAirborne = false;
@@ -71,13 +70,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void moveLeft()
     {
-        lastDirX = -1f;
         PlayerRigidBody2D.linearVelocity = new Vector2(-movementSpeed, PlayerRigidBody2D.linearVelocity.y);
 
         if (playerCombat != null && playerCombat.attackPoint != null)
             playerCombat.attackPoint.localPosition = new Vector3(-attackOffset, 0, 0);
 
-        // Obracamy w lewo: Skala X na -1 (lub 1, zależy jak narysowałeś bazowo)
         transform.localScale = new Vector3(-1, 1, 1);
 
         animator.SetFloat("speed", 1f);
@@ -85,7 +82,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void moveRight()
     {
-        lastDirX = 1f;
         PlayerRigidBody2D.linearVelocity = new Vector2(movementSpeed, PlayerRigidBody2D.linearVelocity.y);
 
         if (playerCombat != null && playerCombat.attackPoint != null)
