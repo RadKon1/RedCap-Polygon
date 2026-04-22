@@ -193,7 +193,7 @@ MonoBehaviour:
   - possibleRooms: 0100000003000000
   - possibleRooms: 0100000003000000
   - possibleRooms: 04000000
-  roomSize: {x: 1, y: 1}
+  roomSize: {x: 30, y: 20}
 --- !u!4 &419613429
 Transform:
   m_ObjectHideFlags: 0
