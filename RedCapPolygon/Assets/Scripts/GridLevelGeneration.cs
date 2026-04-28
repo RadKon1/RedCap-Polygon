@@ -72,10 +72,17 @@ public class GridLevelGeneration : MonoBehaviour
     private Dictionary<Vector2Int, GridNode> levelMap = new Dictionary<Vector2Int, GridNode>();
     private readonly Dictionary<Vector2Int, int> directionWeights = new Dictionary<Vector2Int, int>
     {
-        [Vector2Int.right] = 75,
-        [Vector2Int.down] = 10,         //35
-        [Vector2Int.up] = 0,
-        [Vector2Int.left] = 0          //10
+        [Vector2Int.right] = 75,        //75
+        [Vector2Int.down] = 35,         //35
+        [Vector2Int.up] = 0,            //0
+        [Vector2Int.left] = 10          //10
+    };
+    private readonly Dictionary<Vector2Int, int> directionWeightsBranch = new Dictionary<Vector2Int, int>
+    {
+        [Vector2Int.right] = 50,        //50
+        [Vector2Int.down] = 120,         //120
+        [Vector2Int.up] = 0,            //5
+        [Vector2Int.left] = 50          //50
     };
     private readonly Vector2Int[] directions = {
         Vector2Int.up,    // (0, 1)
@@ -83,7 +90,7 @@ public class GridLevelGeneration : MonoBehaviour
         Vector2Int.left,  // (-1, 0)
         Vector2Int.right  // (1, 0)
     };
-    public Vector2 roomSize = new Vector2(30f, 20f);
+    public Vector2 roomSize = new Vector2(3f, 2f);
     [Header("Room Dimensions (in grid cells)")]
     private readonly Dictionary<RoomType, Vector2Int> roomDimensions = new Dictionary<RoomType, Vector2Int>
     {
@@ -106,6 +113,7 @@ public class GridLevelGeneration : MonoBehaviour
         Vector2Int currentPos = new Vector2Int(-6, 1);
         OccupyRoomArea(currentPos, RoomType.Start);
         criticalPathPositions.Add(currentPos);
+        bool firstRoomSet = false;
         for (int i = 1; i < recipe.Count; i++)
         {
             int totalWeight = 0;
@@ -121,6 +129,12 @@ public class GridLevelGeneration : MonoBehaviour
                 {
                     safeDirections.Add(directions[j]);
                 }
+            }
+            if (!firstRoomSet)
+            {
+                safeDirections.Clear();
+                safeDirections.Add(Vector2Int.right);
+                firstRoomSet = true;
             }
             if (safeDirections.Count == 0)
             {
@@ -199,7 +213,22 @@ public class GridLevelGeneration : MonoBehaviour
             {
                 break;
             }
-            currentPos += safeDirections[Random.Range(0, safeDirections.Count)];
+            int totalWeight = 0;
+            for (int j = 0; j < safeDirections.Count; j++)
+            {
+                totalWeight += directionWeightsBranch[safeDirections[j]];
+            }
+            int randomWeight = Random.Range(0, totalWeight);
+            foreach (Vector2Int direction in safeDirections)
+            {
+                int weightToSub = directionWeightsBranch[direction];
+                randomWeight -= weightToSub;
+                if (randomWeight <= 0)
+                {
+                    currentPos += direction;
+                    break;
+                }
+            }
             OccupyRoomArea(currentPos, roomType);
         }
     }
@@ -212,7 +241,7 @@ public class GridLevelGeneration : MonoBehaviour
             return;
         }
         List<int> availableIndices = new List<int>();
-        for (int i = 3; i < criticalPathPositions.Count - 4; i++)
+        for (int i = 2; i < criticalPathPositions.Count - 2; i++)
         {
             availableIndices.Add(i);
         }

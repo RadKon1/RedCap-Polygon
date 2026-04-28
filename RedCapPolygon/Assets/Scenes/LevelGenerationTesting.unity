@@ -166,10 +166,10 @@ MonoBehaviour:
     - {fileID: 5242411369446500188, guid: 50b8f8ca0f7be224b93c2e356018244a, type: 3}
   requiredBranches:
   - branchName: UpgradeRoom1
-    length: 5
+    length: 10
     specialRoomType: 2
   - branchName: UpgradeRoom2
-    length: 6
+    length: 10
     specialRoomType: 2
   criticalPathRecipe:
   - possibleRooms: 0100000003000000

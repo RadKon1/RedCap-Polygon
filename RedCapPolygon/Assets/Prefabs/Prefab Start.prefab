@@ -144,7 +144,7 @@ SpriteRenderer:
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1359255511587730308, guid: 00af2a8d82807e347ac9773e96589689, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.009856105, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -219,7 +219,7 @@ MonoBehaviour:
     doorOpening: {fileID: 7660559441502036631}
   - localOffset: {x: 0, y: 0}
     direction: {x: 0, y: -1}
-    solidWall: {fileID: 0}
+    solidWall: {fileID: 1674064242941478607}
     doorOpening: {fileID: 6400197629112273463}
   - localOffset: {x: 0, y: 0}
     direction: {x: 0, y: 1}
@@ -617,6 +617,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4161e75f27de44746b9da1601ca5b115, type: 3}
+--- !u!1 &1674064242941478607 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5425650866714781280, guid: 4161e75f27de44746b9da1601ca5b115, type: 3}
+  m_PrefabInstance: {fileID: 6661017606572925103}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1862239118743825604 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5019456003627355243, guid: 4161e75f27de44746b9da1601ca5b115, type: 3}
