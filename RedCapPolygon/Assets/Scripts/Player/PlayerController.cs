@@ -5,85 +5,71 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerMovement movement;
     private PlayerCombat combat;
-    private float jumpDisableDuration = 0f;
-    private float dashDisableDuration = 0f;
+
+    private float dashTimer = 0f;
+    private const float DASH_DURATION = 0.2f;
 
     private void Start()
     {
-        // Initialize player class here...
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
     }
 
     private void Update()
     {
-        checkMovementInput();
-        checkAttackInput();
+        HandleTimers();
+        HandleInput();
     }
 
-    private void checkMovementInput()
+    private void HandleTimers()
     {
-
-        if (jumpDisableDuration > 0) { jumpDisableDuration -= Time.deltaTime; }
-        if (dashDisableDuration > 0) { dashDisableDuration -= Time.deltaTime; }
-
-        if (Keyboard.current.leftShiftKey.wasPressedThisFrame && dashDisableDuration <= 0 && (Keyboard.current.aKey.isPressed || Keyboard.current.dKey.isPressed))
+        if (dashTimer > 0)
         {
-            movement.startDash();
-            movement.dash();
-            dashDisableDuration = 0.2f;
-            return;
-        }
-
-        if (dashDisableDuration <= 0 && movement.isDashing)
-        {
-            movement.stopDash();
-            return;
-        }
-
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpDisableDuration <= 0)
-        {
-            movement.startJump();
-            movement.jump();
-            jumpDisableDuration = 0.5f;
-        }
-
-        if (jumpDisableDuration <= 0 && movement.isAirborne)
-        {
-            movement.endJump();
-        }
-
-        if (dashDisableDuration <= 0)
-        {
-            if (Keyboard.current.aKey.isPressed)
-            {
-                movement.moveLeft();
-            }
-            else if (Keyboard.current.dKey.isPressed)
-            {
-                movement.moveRight();
-            }
-            else
-            {
-                movement.stopMoving();
-            }
+            dashTimer -= Time.deltaTime;
+            if (dashTimer <= 0) movement.StopDash();
         }
     }
 
-    private void checkAttackInput()
+    private void HandleInput()
     {
-        if (Keyboard.current.jKey.wasPressedThisFrame && dashDisableDuration > 0)
+        // 0.TEST LOG 1
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            combat.dashAttack();
+            Debug.Log("Naciśnięto spację - sprawdzam warunki...");
         }
-        else if (Keyboard.current.jKey.wasPressedThisFrame)
+
+        // 1. ATACK
+        if (Keyboard.current.jKey.wasPressedThisFrame)
         {
-            combat.lightAttack();
+            if (movement.isDashing) combat.dashAttack();
+            else combat.lightAttack();
         }
-        else if (Keyboard.current.kKey.wasPressedThisFrame)
+
+        // 2. DASH
+        if (Keyboard.current.leftShiftKey.wasPressedThisFrame && dashTimer <= 0)
         {
-            combat.heavyAttack();
+            movement.StartDash();
+            dashTimer = DASH_DURATION;
+        }
+
+        // 3. RUCH / SKOK
+        if (!movement.isDashing)
+        {
+            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                Debug.Log("Warunek !isDashing spełniony, wywołuję movement.Jump()");
+                movement.Jump();
+            }
+
+            if (Keyboard.current.aKey.isPressed) movement.Move(-1);
+            else if (Keyboard.current.dKey.isPressed) movement.Move(1);
+            else movement.StopMoving();
+        }
+        else
+        {
+            // Jeśli ten log się pojawi po naciśnięciu spacji, to znaczy że DASH blokuje skok
+            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+                Debug.Log("Skok zablokowany, bo isDashing == true!");
         }
     }
 }

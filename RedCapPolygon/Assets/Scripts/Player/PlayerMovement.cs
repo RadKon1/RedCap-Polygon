@@ -1,154 +1,101 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public partial class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D PlayerRigidBody2D;
+    private Rigidbody2D rb;
     private Animator animator;
-    private PlayerCombat playerCombat;
 
     [Header("Movement Settings")]
-    [SerializeField] private float movementSpeed = 5.0f; // Podbiłem bazowo, żeby nie "płynął"
+    [SerializeField] private float movementSpeed = 5.0f;
     [SerializeField] private float dashSpeed = 12.0f;
-    [SerializeField] private float jumpForce = 15.0f;    // Znacznie zwiększone dla dużych modeli
+    [SerializeField] private float jumpForce = 15.0f;
 
-    [Header("Detection Settings")]
+    [Header("Detection")]
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform attackPoint;
-    [SerializeField] private float attackOffset;
-    [SerializeField] private float raycastLength = 0.5f; // Zwiększyłem, żeby przy dużym modelu łapał grunt
+    [SerializeField] private float raycastLength = 0.6f;
 
-    private Vector2 slopeNormalPerpendicular;
+    public bool isDashing { get; private set; }
+    public bool isAirborne { get; private set; }
     private float originalGravityScale;
 
-    public bool isDashing = false;
-    public bool isAirborne = false;
-    public bool onStairs = false;
-
-    private Vector3 savedScale;
+    public Transform groundCheckPoint;
 
     private void Awake()
     {
-        PlayerRigidBody2D = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-        playerCombat = GetComponent<PlayerCombat>();
-        savedScale = transform.localScale;
     }
 
-    private void Update()
-    {
-        CheckGround();
-    }
+    private void Update() => CheckGround();
 
     private void CheckGround()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastLength, groundLayer);
+
         if (hit.collider != null)
         {
+            // LOG DIAGNOSTYCZNY - powie Ci w co trafiłeś
+            Debug.Log("Ziemia wykryta! Trafiłem w: " + hit.collider.name);
+
             isAirborne = false;
             animator.SetBool("isAirborne", false);
-
-            slopeNormalPerpendicular = new Vector2(hit.normal.y, -hit.normal.x).normalized;
-            float angle = Vector2.Angle(hit.normal, Vector2.up);
-
-            if (angle > 5f && angle < 60f)
-            {
-                onStairs = true;
-                animator.SetBool("onStairs", true);
-            }
-            else
-            {
-                onStairs = false;
-                animator.SetBool("onStairs", false);
-            }
-            Debug.DrawRay(transform.position, Vector2.down * raycastLength, Color.red);
         }
         else
         {
             isAirborne = true;
             animator.SetBool("isAirborne", true);
-            onStairs = false;
-            animator.SetBool("onStairs", false);
         }
     }
 
-    public void moveLeft()
+    public void Move(float direction)
     {
-        PlayerRigidBody2D.linearVelocity = new Vector2(-movementSpeed, PlayerRigidBody2D.linearVelocity.y);
+        if (isDashing) return;
 
-        if (playerCombat != null && playerCombat.attackPoint != null)
-            playerCombat.attackPoint.localPosition = new Vector3(-attackOffset, 0, 0);
+        rb.linearVelocity = new Vector2(direction * movementSpeed, rb.linearVelocity.y);
+        animator.SetFloat("speed", Mathf.Abs(direction));
 
-        transform.localScale = new Vector3(-savedScale.x, savedScale.y, savedScale.z);
-
-        animator.SetFloat("speed", 1f);
+        // Obracanie całej postaci
+        if (direction != 0)
+        {
+            float scaleX = direction > 0 ? Mathf.Abs(transform.localScale.x) : -Mathf.Abs(transform.localScale.x);
+            transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
+        }
     }
 
-    public void moveRight()
+    public void StopMoving()
     {
-        PlayerRigidBody2D.linearVelocity = new Vector2(movementSpeed, PlayerRigidBody2D.linearVelocity.y);
-
-        if (playerCombat != null && playerCombat.attackPoint != null)
-            playerCombat.attackPoint.localPosition = new Vector3(attackOffset, 0, 0);
-
-        transform.localScale = new Vector3(savedScale.x, savedScale.y, savedScale.z);
-
-        animator.SetFloat("speed", 1f);
+        if (isDashing) return;
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        animator.SetFloat("speed", 0);
     }
 
-    public void stopMoving()
+    public void Jump()
     {
-        PlayerRigidBody2D.linearVelocity = new Vector2(0f, PlayerRigidBody2D.linearVelocity.y);
-        animator.SetFloat("speed", 0f);
+        // Jeśli skrypt myśli, że jesteś w powietrzu, nie pozwoli skoczyć.
+        // Dlatego RaycastLength jest tak kluczowy!
+        if (isAirborne || isDashing) return;
+
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+        Debug.Log("Skok wywołany!");
     }
 
-    public void jump()
+    public void StartDash()
     {
-        // Physics Jump Logic
-        PlayerRigidBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
-        // Animator Update
-        animator.SetBool("isAirborne", true);
-
-        Debug.Log("Jumping.");
-    }
-
-    public void startJump()
-    {
-        isAirborne = true;
-    }
-
-    public void endJump()
-    {
-        isAirborne = true;
-    }
-
-    public void dash()
-    {
-        float direction = (PlayerRigidBody2D.linearVelocity.x >= 0) ? 1.0f : -1.0f;
-        PlayerRigidBody2D.linearVelocity = new Vector2(direction * dashSpeed, 0f);
-
-        SetAnimatorMovement(new Vector2(direction, 0));
-        Debug.Log("Dashing.");
-    }
-
-    public void startDash()
-    {
-        if (isDashing) return; // Prevent starting a new dash if already dashing
-
+        if (isDashing) return;
         isDashing = true;
-        originalGravityScale = PlayerRigidBody2D.gravityScale;
-        PlayerRigidBody2D.gravityScale = 0f;
+        originalGravityScale = rb.gravityScale;
+        rb.gravityScale = 0f;
+
+        float dir = transform.localScale.x > 0 ? 1 : -1;
+        rb.linearVelocity = new Vector2(dir * dashSpeed, 0f);
     }
 
-    public void stopDash()
+    public void StopDash()
     {
         isDashing = false;
-        PlayerRigidBody2D.gravityScale = originalGravityScale;
-        PlayerRigidBody2D.linearVelocity = new Vector2(0f, PlayerRigidBody2D.linearVelocity.y);
-    }
-
-    private void SetAnimatorMovement(Vector2 direction)
-    {
-        animator.SetFloat("speed", Mathf.Abs(direction.x));
+        rb.gravityScale = originalGravityScale;
+        rb.linearVelocity = Vector2.zero;
     }
 }
