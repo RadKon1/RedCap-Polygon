@@ -33,6 +33,7 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log("Light attack.");
     }
 
+
     public void heavyAttack()
     {
         if (Time.time < nextAttackTime) { return; }
