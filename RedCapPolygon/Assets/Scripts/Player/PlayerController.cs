@@ -32,11 +32,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
-        // 0.TEST LOG 1
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            Debug.Log("Naciśnięto spację - sprawdzam warunki...");
-        }
+        // Sprawdzenie czy w ogóle nowy Input System nam działa
+        if (Keyboard.current == null) return;
 
         // 1. ATACK
         if (Keyboard.current.jKey.wasPressedThisFrame)
@@ -44,10 +41,15 @@ public class PlayerController : MonoBehaviour
             if (movement.isDashing) combat.dashAttack();
             else combat.lightAttack();
         }
+        else if (Keyboard.current.kKey.wasPressedThisFrame)
+        {
+            if (!movement.isDashing && !movement.isAirborne) combat.heavyAttack();
+        }
 
         // 2. DASH
         if (Keyboard.current.leftShiftKey.wasPressedThisFrame && dashTimer <= 0)
         {
+            Debug.Log("Wciśnięto Shift");
             movement.StartDash();
             dashTimer = DASH_DURATION;
         }
@@ -57,7 +59,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
             {
-                Debug.Log("Warunek !isDashing spełniony, wywołuję movement.Jump()");
+                Debug.Log("Wciśnięto Spację");
                 movement.Jump();
             }
 
@@ -67,9 +69,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Jeśli ten log się pojawi po naciśnięciu spacji, to znaczy że DASH blokuje skok
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
-                Debug.Log("Skok zablokowany, bo isDashing == true!");
+                Debug.Log("Postać jest w trakcie dasha (isDashing == true)!");
         }
     }
 }

@@ -1,101 +1,153 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public partial class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private Animator animator;
+    [Header("References")]
+    public PlayerMovementStats MoveStats;
+    [SerializeField] private Collider2D _bodyCollider;
 
-    [Header("Movement Settings")]
-    [SerializeField] private float movementSpeed = 5.0f;
-    [SerializeField] private float dashSpeed = 12.0f;
-    [SerializeField] private float jumpForce = 15.0f;
+    private Rigidbody2D _rb;
 
-    [Header("Detection")]
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float raycastLength = 0.6f;
+    // movement variables
+    private Vector2 _moveVelocity;
+    private bool _isFacingRight;
 
-    public bool isDashing { get; private set; }
-    public bool isAirborne { get; private set; }
-    private float originalGravityScale;
 
-    public Transform groundCheckPoint;
+    // collision check variables
+    private RaycastHit2D _groundHit;
+    private RaycastHit2D _headHit;
+    private bool _isGrounded;
+    private bool _bumpedHead;
+
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponentInChildren<Animator>();
+        _isFacingRight = true;
+
+        _rb = GetComponent<Rigidbody2D>();
+
     }
 
-    private void Update() => CheckGround();
 
-    private void CheckGround()
+    private void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastLength, groundLayer);
+        CollisionChecks();
 
-        if (hit.collider != null)
+        if (_isGrounded)
         {
-            // LOG DIAGNOSTYCZNY - powie Ci w co trafiłeś
-            Debug.Log("Ziemia wykryta! Trafiłem w: " + hit.collider.name);
-
-            isAirborne = false;
-            animator.SetBool("isAirborne", false);
+            Move(MoveStats.GroundAcceleration, MoveStats.GroundDeceleration, InputManager.Movement);
         }
         else
         {
-            isAirborne = true;
-            animator.SetBool("isAirborne", true);
+            Move(MoveStats.AirAcceleration, MoveStats.AirDeceleration, InputManager.Movement);
         }
     }
 
-    public void Move(float direction)
+    #region Movement
+
+    private void Move(float acceleration, float deceleration, Vector2 moveInput)
     {
-        if (isDashing) return;
-
-        rb.linearVelocity = new Vector2(direction * movementSpeed, rb.linearVelocity.y);
-        animator.SetFloat("speed", Mathf.Abs(direction));
-
-        // Obracanie całej postaci
-        if (direction != 0)
+        if (moveInput != Vector2.zero)
         {
-            float scaleX = direction > 0 ? Mathf.Abs(transform.localScale.x) : -Mathf.Abs(transform.localScale.x);
-            transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
+            // check if player needs to turn
+            TurnCheck(moveInput);
+
+            Vector2 targetVelocity = Vector2.zero;
+            if (InputManager.RunIsHeld)
+            {
+                targetVelocity = new Vector2(moveInput.x, 0f) * MoveStats.MaxRunSpeed;
+            }
+
+            _moveVelocity = Vector2.Lerp(_moveVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
+
+            _rb.velocity = new Vector2(_moveVelocity.x, _rb.velocity.y);
+
+
+        }
+        else if (moveInput == Vector2.zero)
+        {
+            _moveVelocity = Vector2.Lerp(_moveVelocity, Vector2.zero, deceleration * Time.fixedDeltaTime);
+            _rb.velocity = new Vector2(_moveVelocity.x, _rb.velocity.y);
+        }
+
+    }
+
+    private void TurnCheck(Vector2 moveInput)
+    {
+        if (_isFacingRight && moveInput.x < 0)
+        {
+            Turn(false);
+        }
+
+        else if (!_isFacingRight && moveInput.x > 0)
+        {
+            Turn(true);
         }
     }
 
-    public void StopMoving()
+    private void Turn(bool turnRight)
     {
-        if (isDashing) return;
-        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-        animator.SetFloat("speed", 0);
+        if (turnRight)
+        {
+            _isFacingRight = true;
+            transform.Rotate(0f, 180f, 0f);
+        }
+        else
+        {
+            _isFacingRight = false;
+            transform.Rotate(0f, -180f, 0f);
+        }
     }
 
-    public void Jump()
+    #endregion
+
+
+    #region Collision Checks
+
+    
+    private void IsGrounded()
     {
-        // Jeśli skrypt myśli, że jesteś w powietrzu, nie pozwoli skoczyć.
-        // Dlatego RaycastLength jest tak kluczowy!
-        if (isAirborne || isDashing) return;
+        Vector2 boxCastOrigin = new Vector2(_bodyCollider.bounds.center.x, _bodyCollider.bounds.min.y);
+        Vector2 boxCastSize = new Vector2(_bodyCollider.bounds.size.x, MoveStats.GroundDetectionRayLength);
 
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
-        Debug.Log("Skok wywołany!");
+        _groundHit = Physics2D.BoxCast(boxCastOrigin, boxCastSize, 0f, Vector2.down, MoveStats.GroundDetectionRayLength, MoveStats.GroundLayer);
+        if (_groundHit.collider != null)
+        {
+            _isGrounded = true;
+        }
+        else
+        {
+            _isGrounded = false;
+        }
+
+        #region Debug Visualization
+        if (MoveStats.DebugShowIsGroundedBox)
+        {
+            Color rayColor;
+            if (_isGrounded)
+            {
+                rayColor = Color.green;
+            }
+            else { rayColor = Color.red; }
+
+            Debug.DrawRay(new Vector2(boxCastOrigin.x - boxCastSize.x / 2, boxCastOrigin.y), Vector2.down * MoveStats.GroundDetectionRayLength, rayColor);
+            Debug.DrawRay(new Vector2(boxCastOrigin.x + boxCastSize.x / 2, boxCastOrigin.y), Vector2.down * MoveStats.GroundDetectionRayLength, rayColor);
+            Debug.DrawRay(new Vector2(boxCastOrigin.x - boxCastSize.x / 2, boxCastOrigin.y - MoveStats.GroundDetectionRayLength), Vector2.right * boxCastSize.x, rayColor);
+        }
+        #endregion
     }
 
-    public void StartDash()
+    private void CollisionChecks()
     {
-        if (isDashing) return;
-        isDashing = true;
-        originalGravityScale = rb.gravityScale;
-        rb.gravityScale = 0f;
-
-        float dir = transform.localScale.x > 0 ? 1 : -1;
-        rb.linearVelocity = new Vector2(dir * dashSpeed, 0f);
+        IsGrounded();
     }
 
-    public void StopDash()
-    {
-        isDashing = false;
-        rb.gravityScale = originalGravityScale;
-        rb.linearVelocity = Vector2.zero;
-    }
+    #endregion
+
+
+
+
 }
