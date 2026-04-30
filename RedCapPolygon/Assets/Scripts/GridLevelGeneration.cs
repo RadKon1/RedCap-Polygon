@@ -66,7 +66,7 @@ public class GridLevelGeneration : MonoBehaviour
         public RoomType Type;
         public RoomVariant[] Variants;
     }
-    [SerializeField] private RoomPrefabMapping[] roomMappings;
+    [SerializeField] private RoomPrefabMapping[] prefabsForTypes;
     [System.Serializable]
     public struct BranchRecipe
     {
@@ -237,12 +237,12 @@ public class GridLevelGeneration : MonoBehaviour
             if (door.direction == Vector2Int.left) { l = true; }
             if (door.direction == Vector2Int.right) { r = true; }
         }
-        for (int i = 0; i < roomMappings.Length; i++)
+        for (int i = 0; i < prefabsForTypes.Length; i++)
         {
-            if (roomMappings[i].Type == typeToFind)
+            if (prefabsForTypes[i].Type == typeToFind)
             {
                 List<GameObject> matchingPrefabs = new List<GameObject>();
-                foreach (RoomVariant variant in roomMappings[i].Variants)
+                foreach (RoomVariant variant in prefabsForTypes[i].Variants)
                 {
                     // Uncomment this when enough prefabs are made
                     // if (variant.Matches(u, d, l, r))

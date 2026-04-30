@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46560917c409064fb7d0256a776f53a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridLevelGeneration
-  roomMappings:
+  prefabsForTypes:
   - inspectorName: Start
     Type: 0
     Variants:
@@ -161,34 +161,34 @@ MonoBehaviour:
     Type: 1
     Variants:
     - Prefab: {fileID: 3984513939971681388, guid: fa6c60ad0d6a21a42ace1e45081b162d, type: 3}
-      Up: 1
-      Down: 1
-      Left: 1
-      Right: 1
-  - inspectorName: Upgrade Room
-    Type: 2
-    Variants:
-    - Prefab: {fileID: 5242411369446500188, guid: eb2a70d3206dafc488eb67f9800507e9, type: 3}
-      Up: 1
-      Down: 1
-      Left: 1
-      Right: 1
-  - inspectorName: Transition
-    Type: 3
-    Variants:
-    - Prefab: {fileID: 5242411369446500188, guid: 98a0cbbcecb981f41847d40c83e40687, type: 3}
-      Up: 1
-      Down: 1
-      Left: 1
-      Right: 1
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
   - inspectorName: Boss
     Type: 4
     Variants:
     - Prefab: {fileID: 5242411369446500188, guid: 50b8f8ca0f7be224b93c2e356018244a, type: 3}
-      Up: 1
-      Down: 1
-      Left: 1
-      Right: 1
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
+  - inspectorName: Transition
+    Type: 3
+    Variants:
+    - Prefab: {fileID: 5242411369446500188, guid: 98a0cbbcecb981f41847d40c83e40687, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
+  - inspectorName: Upgrade Room
+    Type: 2
+    Variants:
+    - Prefab: {fileID: 5242411369446500188, guid: eb2a70d3206dafc488eb67f9800507e9, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
   requiredBranches:
   - branchName: UpgradeRoom1
     length: 10
@@ -296,7 +296,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 300
+  orthographic size: 250
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
