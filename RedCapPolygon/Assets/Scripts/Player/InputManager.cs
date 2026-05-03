@@ -19,15 +19,24 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        PlayerInput = GetComponent<PlayerInput>();
+        // Szukamy komponentu na tym samym obiekcie lub w rodzicu/dzieciach
+        PlayerInput = GetComponentInParent<PlayerInput>();
 
-        // Pobieranie akcji po ich nazwach z komponentu Player Input
-        _moveAction = PlayerInput.actions["Move"];
-        _jumpAction = PlayerInput.actions["Jump"];
-        _runAction = PlayerInput.actions["Run"];
+        if (PlayerInput != null)
+        {
+            _moveAction = PlayerInput.actions["Move"];
+            _jumpAction = PlayerInput.actions["Jump"];
+            _runAction = PlayerInput.actions["Run"];
 
-        // Upewnij się, że dodasz akcję "Attack" w ustawieniach Input Actions!
-        _attackAction = PlayerInput.actions["Attack"];
+            if (PlayerInput.actions.FindAction("Attack") != null)
+            {
+                _attackAction = PlayerInput.actions["Attack"];
+            }
+        }
+        else
+        {
+            Debug.LogError("No player Input component");
+        }
     }
 
     private void Update()
@@ -47,3 +56,4 @@ public class InputManager : MonoBehaviour
         }
     }
 }
+
