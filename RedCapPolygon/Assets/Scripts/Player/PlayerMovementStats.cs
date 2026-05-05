@@ -8,6 +8,7 @@ public class PlayerMovementStats : ScriptableObject
 
     // Mozna potem dodac chodzenie
     [Header("Walk")]
+    [Range(0f, 1f)] public float MoveThreshold = 0.25f;
     [Range(1f, 100f)] public float MaxWalkSpeed = 12.5f;
     [Range(0.25f, 50f)] public float GroundAcceleration = 5f;
     [Range(0.25f, 50f)] public float GroundDeceleration = 20f;
@@ -45,6 +46,17 @@ public class PlayerMovementStats : ScriptableObject
     [Header("Jump Coyote Time")]
     [Range(0f, 1f)] public float JumpCoyoteTime = 0.1f;
 
+    [Header("Dash")]
+    [Range(0f, 1f)] public float DashTime = 0.11f;
+    [Range(1f, 200f)] public float DashSpeed = 40f;
+    [Range(0f, 1f)] public float TimeBetweenDashesOnGround = 0.225f;
+    [Range(0, 2)] public int NumberOfDashes = 2;
+    [Range(0f, 0.5f)] public float DashDiagonallyBias = 0.4f;
+
+    [Header("Dash Cancel Time")]
+    [Range(0.01f, 5f)] public float DashGravityOnReleaseMutliplier = 1f;
+    [Range(0.02f, 0.3f)] public float DashTimeForUpwardsCancel = 0.027f;
+
     [Header("Debug")]
     public bool DebugShowIsGroundedBox;
     public bool DebugShowHeadBumpBox;
@@ -58,6 +70,18 @@ public class PlayerMovementStats : ScriptableObject
     [Range(0, 500)] public int VisualizationSteps = 90;
 
 
+
+    public readonly Vector2[] DashDirections = new Vector2[]
+    {
+        new Vector2(0, 0), // NOTHING
+        new Vector2(1, 0), // RIGHT
+        new Vector2(1, 1).normalized, // TOP RIGHT
+        new Vector2(-1, 0), // LEFT
+        new Vector2(-1, 1).normalized, // TOP LEFT
+        new Vector2(0, -1), // BOTTOM
+        new Vector2(1, -1).normalized, // BOTTOM RIGHT
+        new Vector2(-1, -1).normalized, // BOTTOM LEFT
+    };
 
     // some math
 
