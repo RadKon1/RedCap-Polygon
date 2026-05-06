@@ -9,6 +9,7 @@ public partial class PlayerMovement : MonoBehaviour
     [SerializeField] private Collider2D _bodyCollider;
 
     private Rigidbody2D _rb;
+    private Animator _animator;
 
     // movement variables
     public float HorizontalVelocity { get; private set; }
@@ -67,6 +68,7 @@ public partial class PlayerMovement : MonoBehaviour
         JumpChecks();
         LandCheck();
         DashCheck();
+        UpdateAnimations();
     }
 
 
@@ -77,6 +79,7 @@ public partial class PlayerMovement : MonoBehaviour
         _isFacingRight = true;
 
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponentInChildren<Animator>();
 
     }
 
@@ -455,7 +458,6 @@ public partial class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-
     #region Timers
 
     private void CountTimers()
@@ -548,4 +550,14 @@ public partial class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region animations
+
+    private void UpdateAnimations()
+    {
+        _animator.SetFloat("Speed", Mathf.Abs(HorizontalVelocity));
+        _animator.SetBool("isGrounded", _isGrounded);
+        _animator.SetBool("isDashing", _isDashing);
+    }
+
+    #endregion
 }
