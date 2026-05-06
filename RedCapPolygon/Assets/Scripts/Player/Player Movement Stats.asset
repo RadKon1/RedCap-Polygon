@@ -44,7 +44,7 @@ MonoBehaviour:
   DashTimeForUpwardsCancel: 0.027
   DebugShowIsGroundedBox: 0
   DebugShowHeadBumpBox: 0
-  ShowWalkJumpArc: 0
+  ShowWalkJumpArc: 1
   ShowRunJumpArc: 0
   StopOnCollision: 1
   DrawRight: 1

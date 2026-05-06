@@ -67,7 +67,7 @@ public class PlayerCombat : MonoBehaviour
         if (CanLightAttack())
         {
             Debug.Log("Performed Light Attack with damage: " + CombatStats.LightAttackDamage);
-            PerformAttack(CombatStats.LightAttackHitBox);
+            PerformAttack(CombatStats.LightAttackHitBox, CombatStats.LightAttackDamage);
             _lastLightAttackTime = Time.time;
             _animator.SetTrigger("LightAttack");
         }
@@ -77,7 +77,7 @@ public class PlayerCombat : MonoBehaviour
         if (CanHeavyAttack())
         {
             Debug.Log("Performed Heavy Attack with damage: " + CombatStats.HeavyAttackDamage);
-            PerformAttack(CombatStats.HeavyAttackHitBox);
+            PerformAttack(CombatStats.HeavyAttackHitBox, CombatStats.HeavyAttackDamage);
             _lastHeavyAttackTime = Time.time;
             _animator.SetTrigger("HeavyAttack");
         }
@@ -87,7 +87,7 @@ public class PlayerCombat : MonoBehaviour
         if (CanDashAttack())
         {
             Debug.Log("Performed Dash Attack with damage: " + CombatStats.DashAttackDamage);
-            PerformAttack(CombatStats.DashAttackHitBox);
+            PerformAttack(CombatStats.DashAttackHitBox, CombatStats.DashAttackDamage);
             _lastDashAttackTime = Time.time;
             _animator.SetTrigger("DashAttack");
         }
@@ -102,7 +102,7 @@ public class PlayerCombat : MonoBehaviour
 
             // hit enemy logic here
 
-            // e.g. enemy.GetComponent<EnemyHealth>().TakeDamage(CombatStats.DashAttackDamage);
+            // e.g. enemy.GetComponent<EnemyHealth>().TakeDamage(damage);
         }
     }
 }
