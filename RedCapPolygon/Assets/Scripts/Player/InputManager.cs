@@ -10,7 +10,9 @@ public class InputManager : MonoBehaviour
     public static bool JumpIsHeld;
     public static bool JumpWasReleased;
     public static bool RunIsHeld;
-    public static bool AttackWasPressed;
+    public static bool LightAttackWasPressed;
+    public static bool HeavyAttackWasPressed;
+    public static bool DashAttackWasPressed;
     public static bool DashWasPressed;
 
     private InputAction _moveAction;
@@ -18,6 +20,10 @@ public class InputManager : MonoBehaviour
     private InputAction _runAction;
     private InputAction _attackAction;
     private InputAction _dashAction;
+    private InputAction _lightAttackAction;
+    private InputAction _heavyAttackAction;
+    private InputAction _dashAttackAction;
+
 
     private void Awake()
     {
@@ -30,11 +36,9 @@ public class InputManager : MonoBehaviour
             _jumpAction = PlayerInput.actions["Jump"];
             _runAction = PlayerInput.actions["Run"];
             _dashAction = PlayerInput.actions["Dash"];
-
-            if (PlayerInput.actions.FindAction("Attack") != null)
-            {
-                _attackAction = PlayerInput.actions["Attack"];
-            }
+            _lightAttackAction = PlayerInput.actions["LightAttack"];
+            _heavyAttackAction = PlayerInput.actions["HeavyAttack"];
+            _dashAttackAction = PlayerInput.actions["DashAttack"];
         }
         else
         {
@@ -51,14 +55,11 @@ public class InputManager : MonoBehaviour
         JumpWasReleased = _jumpAction.WasReleasedThisFrame();
 
         RunIsHeld = _runAction.IsPressed();
-
         DashWasPressed = _dashAction.WasPressedThisFrame();
 
-        // Zabezpieczenie, jeśli jeszcze nie dodałeś ataku do Input Actions
-        if (_attackAction != null)
-        {
-            AttackWasPressed = _attackAction.WasPressedThisFrame();
-        }
+        LightAttackWasPressed = _lightAttackAction.WasPressedThisFrame();
+        HeavyAttackWasPressed = _heavyAttackAction.WasPressedThisFrame();
+        DashAttackWasPressed = _dashAttackAction.WasPressedThisFrame();
     }
 }
 

@@ -2,39 +2,57 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public Animator animator;
-    public Transform attackPoint;
-    public float attackRange = 0.5f;
-    public LayerMask enemyLayers;
+    [Header("References")]
+    public PlayerCombatStats CombatStats;
 
-    [Header("Rates")]
-    public float lightAttackRate = 2f;
-    public float heavyAttackRate = 1f;
-    public float dashAttackRate = 2f;
+    [SerializeField] private LayerMask _enemyLayers;
+    private Animator _animator; 
 
-    private float nextAttackTime = 0f;
-
-    public void lightAttack() => PerformAttack("lightAttack", lightAttackRate);
-    public void heavyAttack() => PerformAttack("heavyAttack", heavyAttackRate);
-    public void dashAttack() => PerformAttack("dashAttack", dashAttackRate);
-
-    private void PerformAttack(string triggerName, float rate)
+    private float _lastLightAttackTime;
+    private float _lastHeavyAttackTime;
+    private float _lastDashAttackTime;
+    private void Awake()
     {
-        if (Time.time < nextAttackTime) return;
-
-        animator.SetTrigger(triggerName);
-        nextAttackTime = Time.time + (1f / rate);
-
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-        foreach (Collider2D enemy in hitEnemies)
-        {
-            Debug.Log("Trafiono: " + enemy.name);
-            // enemy.GetComponent<Enemy>().TakeDamage(10);
-        }
+        _animator = GetComponent<Animator>();
     }
 
-    private void OnDrawGizmosSelected()
+    public bool CanLightAttack()
     {
-        if (attackPoint) Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        return Time.time >= _lastLightAttackTime + CombatStats.LightAttackRate;
+    }
+    public bool CanHeavyAttack()
+    {
+        return Time.time >= _lastHeavyAttackTime + CombatStats.HeavyAttackRate;
+    }
+    public bool CanDashAttack()
+    {
+        return Time.time >= _lastDashAttackTime + CombatStats.DashAttackRate;
+    }
+    public void PerformLightAttack()
+    {
+        if (CanLightAttack())
+        {
+            Debug.Log("Performed Light Attack with damage: " + CombatStats.LightAttackDamage);
+            _lastLightAttackTime = Time.time;
+            _animator.SetTrigger("LightAttack");
+        }
+    }
+    public void PerformHeavyAttack()
+    {
+        if (CanHeavyAttack())
+        {
+            Debug.Log("Performed Heavy Attack with damage: " + CombatStats.HeavyAttackDamage);
+            _lastHeavyAttackTime = Time.time;
+            _animator.SetTrigger("HeavyAttack");
+        }
+    }
+    public void PerformDashAttack()
+    {
+        if (CanDashAttack())
+        {
+            Debug.Log("Performed Dash Attack with damage: " + CombatStats.DashAttackDamage);
+            _lastDashAttackTime = Time.time;
+            _animator.SetTrigger("DashAttack");
+        }
     }
 }
