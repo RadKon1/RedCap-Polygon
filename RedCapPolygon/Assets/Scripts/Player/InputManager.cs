@@ -18,7 +18,6 @@ public class InputManager : MonoBehaviour
     private InputAction _moveAction;
     private InputAction _jumpAction;
     private InputAction _runAction;
-    private InputAction _attackAction;
     private InputAction _dashAction;
     private InputAction _lightAttackAction;
     private InputAction _heavyAttackAction;
