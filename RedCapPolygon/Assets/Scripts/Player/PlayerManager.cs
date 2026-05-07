@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     private float _currentXP;
     private int _currentLevel;
 
-    void Awake()
+    private void Awake()
     {
         _maxHealth = _stats.BaseMaxHealth;
         _currentHealth = _maxHealth;

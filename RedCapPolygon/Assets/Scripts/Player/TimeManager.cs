@@ -14,7 +14,7 @@ public class TimeManager : MonoBehaviour
 
     public void HitStop()
     {
-        StopAllCoroutines(); // Ensure we don't stack hitstops
+        StopAllCoroutines(); // Ensure hitstop does not stack
         StartCoroutine(DoHitStop());
     }
 

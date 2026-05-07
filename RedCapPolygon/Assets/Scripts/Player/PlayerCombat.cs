@@ -96,6 +96,10 @@ public class PlayerCombat : MonoBehaviour
    private  void PerformAttack(float attackHitbox, int damage)
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, attackHitbox, _enemyLayers);
+        if (hitEnemies.Length > 0)
+        {
+            TimeManager.Instance.HitStop();
+        }
         foreach (Collider2D enemy in hitEnemies)
         {
             Debug.Log("Hit " + enemy.name);
