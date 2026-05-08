@@ -1,3 +1,4 @@
+using LegacyGenerator;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,8 @@ public class GridNode
     public bool IsOrigin;
     public List<DoorConnection> AvailableDoors;
 
+    public HashSet<Vector2Int> ConnectedOrigins;
+
     public GridNode(Vector2Int position, RoomType type, Vector2Int origin, bool isOrigin)
     {
         GridPosition = position;
@@ -32,18 +35,38 @@ public class GridNode
         OriginPosition = origin;
         IsOrigin = isOrigin;
         AvailableDoors = new List<DoorConnection>();
+        ConnectedOrigins = new HashSet<Vector2Int>();
     }
 }
 
 public class GridLevelGeneration : MonoBehaviour
 {
     [System.Serializable]
+    public struct RoomVariant
+    {
+
+        public GameObject Prefab;
+
+        [Header("Where does the prefab exit?")]
+        public bool Up;
+        public bool Down;
+        public bool Left;
+        public bool Right;
+
+        public bool Matches(bool u, bool d, bool l, bool r)
+        {
+            return Up == u && Down == d && Left == l && Right == r;
+        }
+    }
+
+    [System.Serializable]
     public struct RoomPrefabMapping
     {
+        public string inspectorName;
         public RoomType Type;
-        public GameObject[] Prefabs;
+        public RoomVariant[] Variants;
     }
-    [SerializeField] private RoomPrefabMapping[] roomMappings;
+    [SerializeField] private RoomPrefabMapping[] prefabsForTypes;
     [System.Serializable]
     public struct BranchRecipe
     {
@@ -72,10 +95,17 @@ public class GridLevelGeneration : MonoBehaviour
     private Dictionary<Vector2Int, GridNode> levelMap = new Dictionary<Vector2Int, GridNode>();
     private readonly Dictionary<Vector2Int, int> directionWeights = new Dictionary<Vector2Int, int>
     {
-        [Vector2Int.right] = 75,
-        [Vector2Int.down] = 10,         //35
-        [Vector2Int.up] = 0,
-        [Vector2Int.left] = 0          //10
+        [Vector2Int.right] = 75,        //75
+        [Vector2Int.down] = 70,         //70
+        [Vector2Int.up] = 30,            //0
+        [Vector2Int.left] = 90          //75
+    };
+    private readonly Dictionary<Vector2Int, int> directionWeightsBranch = new Dictionary<Vector2Int, int>
+    {
+        [Vector2Int.right] = 50,        //50
+        [Vector2Int.down] = 100,         //120
+        [Vector2Int.up] = 40,            //5
+        [Vector2Int.left] = 50          //50
     };
     private readonly Vector2Int[] directions = {
         Vector2Int.up,    // (0, 1)
@@ -83,7 +113,7 @@ public class GridLevelGeneration : MonoBehaviour
         Vector2Int.left,  // (-1, 0)
         Vector2Int.right  // (1, 0)
     };
-    public Vector2 roomSize = new Vector2(30f, 20f);
+    public Vector2 roomSize = new Vector2(3f, 2f);
     [Header("Room Dimensions (in grid cells)")]
     private readonly Dictionary<RoomType, Vector2Int> roomDimensions = new Dictionary<RoomType, Vector2Int>
     {
@@ -95,20 +125,54 @@ public class GridLevelGeneration : MonoBehaviour
     };
     private void Start()
     {
-        GenerateCriticalPath(criticalPathRecipe);
-        GenerateBranches();
-        CreateDoorways();
-        InstantiateMap();
+        int MAX_ATTEMPTS = 100;
+        int currentAttempt = 0;
+        bool success = false;
+        while (currentAttempt < MAX_ATTEMPTS && !success)
+        {
+            success = TryGenerating();
+            currentAttempt++;
+        }
+        if (success)
+        {
+            Debug.Log(currentAttempt);
+            CreateDoorways();
+            InstantiateMap();
+        }
+        else
+        {
+            Debug.LogError("Couldn't generate playable map.");
+        }
     }
-    private void GenerateCriticalPath(List<RecipeStep> recipe)
+
+    private bool TryGenerating()
+    {
+        levelMap.Clear();
+        criticalPathPositions.Clear();
+
+        if (!GenerateCriticalPath(criticalPathRecipe))
+        {
+            return false;
+        }
+
+        if (!GenerateBranches())
+        {
+            return false;
+        }
+
+        return true;
+    }
+    private bool GenerateCriticalPath(List<RecipeStep> recipe)
     {
         criticalPathPositions.Clear();
         Vector2Int currentPos = new Vector2Int(-6, 1);
         OccupyRoomArea(currentPos, RoomType.Start);
         criticalPathPositions.Add(currentPos);
+        bool firstRoomSet = false;
+        Vector2Int lastDir = Vector2Int.zero;
         for (int i = 1; i < recipe.Count; i++)
         {
-            int totalWeight = 0;
+            Vector2Int previousPos = currentPos;
             RoomType[] roomPool = recipe[i].possibleRooms;
             // For now fully random choice from the pool (to be changed)
             RoomType nextRoomType = roomPool[Random.Range(0, roomPool.Length)];
@@ -122,10 +186,18 @@ public class GridLevelGeneration : MonoBehaviour
                     safeDirections.Add(directions[j]);
                 }
             }
+            if (!firstRoomSet)
+            {
+                safeDirections.Clear();
+                safeDirections.Add(Vector2Int.right);
+                firstRoomSet = true;
+            }
+            safeDirections = FilterDirections(currentPos, safeDirections, nextRoomType, lastDir);
             if (safeDirections.Count == 0)
             {
-                break;
+                return false; ;
             }
+            int totalWeight = 0;
             for (int j = 0; j < safeDirections.Count; j++)
             {
                 totalWeight += directionWeights[safeDirections[j]];
@@ -138,37 +210,73 @@ public class GridLevelGeneration : MonoBehaviour
                 if (randomWeight <= 0)
                 {
                     currentPos += direction;
+                    lastDir = direction;
                     break;
                 }
             }
             OccupyRoomArea(currentPos, nextRoomType);
+
+            ConnectRooms(previousPos, currentPos);
+
             criticalPathPositions.Add(currentPos);
         }
+        return true;
     }
-    private GameObject GetPrefabForRoomType(RoomType typeToFind)
+
+    // If this function returns null then simply more Prefabs have to be made
+    private GameObject GetPrefabForVariant(RoomType typeToFind, List<DoorConnection> doors)
     {
-        for (int i = 0; i < roomMappings.Length; i++)
+        bool u = false;
+        bool d = false;
+        bool l = false;
+        bool r = false;
+        foreach (DoorConnection door in doors)
         {
-            if (roomMappings[i].Type == typeToFind)
+            if (door.direction == Vector2Int.up) { u = true; }
+            if (door.direction == Vector2Int.down) { d = true; }
+            if (door.direction == Vector2Int.left) { l = true; }
+            if (door.direction == Vector2Int.right) { r = true; }
+        }
+        for (int i = 0; i < prefabsForTypes.Length; i++)
+        {
+            if (prefabsForTypes[i].Type == typeToFind)
             {
-                if (roomMappings[i].Prefabs == null || roomMappings[i].Prefabs.Length == 0)
+                List<GameObject> matchingPrefabs = new List<GameObject>();
+                foreach (RoomVariant variant in prefabsForTypes[i].Variants)
                 {
-                    return null;
+                    // Uncomment this when enough prefabs are made
+                    // if (variant.Matches(u, d, l, r))
+                    {
+                        matchingPrefabs.Add(variant.Prefab);
+                    }
                 }
 
-                int prefabNumber = Random.Range(0, roomMappings[i].Prefabs.Length);
-                return roomMappings[i].Prefabs[prefabNumber];
+                if (matchingPrefabs.Count > 0)
+                {
+                    return matchingPrefabs[Random.Range(0, matchingPrefabs.Count)];
+                }
             }
         }
         Debug.LogError("Prefab not found for type " + typeToFind);
         return null;
     }
 
-    private void GenerateSingleBranch(Vector2Int startPos, BranchRecipe recipe)
+    private void ConnectRooms(Vector2Int originA, Vector2Int originB)
+    {
+        if (levelMap.ContainsKey(originA) && levelMap.ContainsKey(originB))
+        {
+            levelMap[originA].ConnectedOrigins.Add(originB);
+            levelMap[originB].ConnectedOrigins.Add(originA);
+        }
+    }
+
+    private bool GenerateSingleBranch(Vector2Int startPos, BranchRecipe recipe)
     {
         Vector2Int currentPos = startPos;
+        Vector2Int lastDir = Vector2Int.zero;
         for (int i = 0; i < recipe.length; i++)
         {
+            Vector2Int previousPos = currentPos;
             RoomType roomType;
             if (i != recipe.length - 1)
             {
@@ -195,24 +303,43 @@ public class GridLevelGeneration : MonoBehaviour
                     safeDirections.Add(directions[j]);
                 }
             }
+            safeDirections = FilterDirections(currentPos, safeDirections, roomType, lastDir);
             if (safeDirections.Count == 0)
             {
-                break;
+                return false;
             }
-            currentPos += safeDirections[Random.Range(0, safeDirections.Count)];
+            int totalWeight = 0;
+            for (int j = 0; j < safeDirections.Count; j++)
+            {
+                totalWeight += directionWeightsBranch[safeDirections[j]];
+            }
+            int randomWeight = Random.Range(0, totalWeight);
+            foreach (Vector2Int direction in safeDirections)
+            {
+                int weightToSub = directionWeightsBranch[direction];
+                randomWeight -= weightToSub;
+                if (randomWeight <= 0)
+                {
+                    currentPos += direction;
+                    lastDir = direction;
+                    break;
+                }
+            }
             OccupyRoomArea(currentPos, roomType);
+            ConnectRooms(previousPos, currentPos);
         }
+        return true;
     }
 
-    private void GenerateBranches()
+    private bool GenerateBranches()
     {
         if (criticalPathPositions.Count <= 7)
         {
             Debug.LogWarning("Critical Path too short");
-            return;
+            return false;
         }
         List<int> availableIndices = new List<int>();
-        for (int i = 3; i < criticalPathPositions.Count - 4; i++)
+        for (int i = 2; i < criticalPathPositions.Count - 2; i++)
         {
             availableIndices.Add(i);
         }
@@ -232,9 +359,13 @@ public class GridLevelGeneration : MonoBehaviour
                 int roomIndexOnPath = availableIndices[lastElementIndex];
                 availableIndices.RemoveAt(lastElementIndex);
                 Vector2Int startPos = criticalPathPositions[roomIndexOnPath];
-                GenerateSingleBranch(startPos, recipe);
+                if (!GenerateSingleBranch(startPos, recipe))
+                {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     private bool CanFitRoom(Vector2Int originPos, Vector2Int dimensions)
@@ -267,6 +398,28 @@ public class GridLevelGeneration : MonoBehaviour
         }
     }
 
+    private List<Vector2Int> FilterDirections(Vector2Int currentPos, List<Vector2Int> safeDirs, RoomType nextType, Vector2Int lastDir)
+    {
+        List<Vector2Int> filtered = new List<Vector2Int>(safeDirs);
+
+        if (nextType == RoomType.Boss || nextType == RoomType.UpgradeRoom)
+        {
+            filtered.Remove(Vector2Int.up);
+            filtered.Remove(Vector2Int.down);
+        }
+
+        if (lastDir == Vector2Int.down)
+        {
+            filtered.Remove(Vector2Int.down);
+        }
+        if (lastDir == Vector2Int.up)
+        {
+            filtered.Remove(Vector2Int.up);
+        }
+
+        return filtered;
+    }
+
     private void CreateDoorways()
     {
         foreach (KeyValuePair<Vector2Int, GridNode> node in levelMap)
@@ -283,13 +436,16 @@ public class GridLevelGeneration : MonoBehaviour
                     GridNode neighbourNode = levelMap[neighbourPos];
                     if (currentNode.OriginPosition != neighbourNode.OriginPosition)
                     {
-                        Vector2Int offset = currentPos - currentNode.OriginPosition;
                         GridNode originNode = levelMap[currentNode.OriginPosition];
-                        originNode.AvailableDoors.Add(new DoorConnection
+                        if (originNode.ConnectedOrigins.Contains(neighbourNode.OriginPosition))
                         {
-                            localOffset = offset,
-                            direction = direction
-                        });
+                            Vector2Int offset = currentPos - currentNode.OriginPosition;
+                            originNode.AvailableDoors.Add(new DoorConnection
+                            {
+                                localOffset = offset,
+                                direction = direction
+                            });
+                        }
                     }
                 }
             }
@@ -302,7 +458,7 @@ public class GridLevelGeneration : MonoBehaviour
             if (!node.Value.IsOrigin) continue;
             float globalX = node.Key.x * roomSize.x;
             float globalY = node.Key.y * roomSize.y;
-            GameObject prefabToSpawn = GetPrefabForRoomType(node.Value.Type);
+            GameObject prefabToSpawn = GetPrefabForVariant(node.Value.Type, node.Value.AvailableDoors);
             GameObject newRoom = Instantiate(prefabToSpawn, new Vector3(globalX, globalY, 0), Quaternion.identity);
             RoomController roomController = newRoom.GetComponent<RoomController>();
             if (roomController != null)
