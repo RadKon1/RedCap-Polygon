@@ -46,5 +46,11 @@ public class RoomController : MonoBehaviour
                 }
             }
         }
+
+        InRoomGenerator populator = GetComponent<InRoomGenerator>();
+        if (populator != null)
+        {
+            populator.PopulateRoom();
+        }
     }
 }
