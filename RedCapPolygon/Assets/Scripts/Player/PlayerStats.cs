@@ -1,20 +1,17 @@
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+[CreateAssetMenu(menuName = "PlayerStats")]
+public class PlayerStats : ScriptableObject
 {
-    // Player stats
-    private double currentHealth = 100.0f;
-    private double maxHealth = 100.0f;
-    private double defense = 3.0f;
-    private double luck = 1.0f;
-    private double experiencePoints = 0.0f;
+    [Header("Health Settings")]
+    public float BaseMaxHealth = 100.0f;
+    public float HealthPerLevel = 20.0f;
 
-    // Combat stats
-    private double attackDamage = 10.0f;
-    private double criticalChance = 0.1f;
+    [Header("Defense & Luck")]
+    public float BaseDefense = 3.0f;
+    public float BaseLuck = 1.0f;
 
-
-    // Game-Logic data
-    private double invincibilityDuration = 0.5f;
-
+    [Header("Leveling System")]
+    public float XpToLevelUp = 100f;
+    [Range(1f, 2f)] public float XpMultiplier = 1.2f;
 }
