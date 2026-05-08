@@ -1,0 +1,31 @@
+using UnityEngine;
+using System.Collections;
+
+public class TimeManager : MonoBehaviour
+{
+    [Header("References")]
+    public PlayerCombatStats CombatStats;
+
+    public static TimeManager Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void HitStop()
+    {
+        StopAllCoroutines(); // Ensure we don't stack hitstops
+        StartCoroutine(DoHitStop());
+    }
+
+    private IEnumerator DoHitStop()
+    {
+        // freeze time
+        Time.timeScale = 0f;
+
+        yield return new WaitForSecondsRealtime(CombatStats.HitStopTime);
+
+        // resume time
+        Time.timeScale = 1f;
+    }
+}

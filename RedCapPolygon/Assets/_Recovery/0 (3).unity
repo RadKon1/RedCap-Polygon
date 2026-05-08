@@ -362,7 +362,7 @@ Transform:
   m_GameObject: {fileID: 684049297}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -3.475586, y: -7.398079, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -934,9 +934,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1422302599}
   - component: {fileID: 1422302606}
-  - component: {fileID: 1422302608}
   - component: {fileID: 1422302598}
-  - component: {fileID: 1422302607}
   - component: {fileID: 1422302601}
   m_Layer: 0
   m_Name: Player
@@ -973,6 +971,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 684049298}
+  - {fileID: 1651720616}
   - {fileID: 844389451}
   - {fileID: 1581182381}
   - {fileID: 1693278615}
@@ -1017,37 +1016,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480a443ca6bebf34eb29286c9d641e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  CombatStats: {fileID: 11400000, guid: d65c6b5f4e447e44693bd9b96a403140, type: 2}
+  CombatStats: {fileID: 0}
   _enemyLayers:
     serializedVersion: 2
-    m_Bits: 128
-  _attackPoint: {fileID: 1581182381}
---- !u!114 &1422302607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1422302597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4628b0d36ca11dc44b4b6e4686f3aa21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
-  _stats: {fileID: 11400000, guid: 205af8c86e9ae7047b5cf6f920308eb6, type: 2}
---- !u!114 &1422302608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1422302597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b53411d16922eb14782fdc61a226bb17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeManager
-  CombatStats: {fileID: 11400000, guid: d65c6b5f4e447e44693bd9b96a403140, type: 2}
+    m_Bits: 0
 --- !u!1 &1581182380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1073,7 +1045,38 @@ Transform:
   m_GameObject: {fileID: 1581182380}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8, y: 0, z: 0}
+  m_LocalPosition: {x: -1.5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1422302599}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1651720615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1651720616}
+  m_Layer: 0
+  m_Name: GroundCheckPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1651720616
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651720615}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.7, y: -19.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

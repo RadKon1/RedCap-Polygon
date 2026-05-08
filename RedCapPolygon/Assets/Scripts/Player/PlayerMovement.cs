@@ -1,154 +1,563 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public partial class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D PlayerRigidBody2D;
-    private Animator animator;
-    private PlayerCombat playerCombat;
+    [Header("References")]
+    public PlayerMovementStats MoveStats;
+    [SerializeField] private Collider2D _bodyCollider;
 
-    [Header("Movement Settings")]
-    [SerializeField] private float movementSpeed = 5.0f; // Podbiłem bazowo, żeby nie "płynął"
-    [SerializeField] private float dashSpeed = 12.0f;
-    [SerializeField] private float jumpForce = 15.0f;    // Znacznie zwiększone dla dużych modeli
+    private Rigidbody2D _rb;
+    private Animator _animator;
 
-    [Header("Detection Settings")]
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform attackPoint;
-    [SerializeField] private float attackOffset;
-    [SerializeField] private float raycastLength = 0.5f; // Zwiększyłem, żeby przy dużym modelu łapał grunt
+    // movement variables
+    public float HorizontalVelocity { get; private set; }
+    private bool _isFacingRight;
 
-    private Vector2 slopeNormalPerpendicular;
-    private float originalGravityScale;
 
-    public bool isDashing = false;
-    public bool isAirborne = false;
-    public bool onStairs = false;
+    // collision check variables
+    private RaycastHit2D _groundHit;
+    private RaycastHit2D _headHit;
+    private bool _isGrounded;
+    private bool _bumpedHead;
 
-    private Vector3 savedScale;
 
-    private void Awake()
-    {
-        PlayerRigidBody2D = GetComponent<Rigidbody2D>();
-        animator = GetComponentInChildren<Animator>();
-        playerCombat = GetComponent<PlayerCombat>();
-        savedScale = transform.localScale;
-    }
+    // jump variables
+    public float VerticalVelocity { get; private set;  }
+    private bool _isJumping;
+    private bool _isFastFalling;
+    private bool _isFalling;
+    private float _fastFallTime;
+    private float _fastFallReleaseSpeed;
+
+
+
+    // apex variables
+    private float _apexPoint;
+    private float _timePastApexThreshold;
+    private bool _isPastApexThreshold;
+
+
+    // jump buffer variables
+    private float _jumpBufferTimer;
+    private bool _jumpReleasedDuringBuffer;
+
+
+    // cotote time variables
+    private float _coyoteTimer;
+
+
+
+    // dash variables
+    private bool _isDashing;
+    private bool _isAirDashing;
+    private float _dashTimer;
+    private float _dashOnGroundTimer;
+    private int _numberOfDashesUsed;
+    private Vector2 _dashDirection;
+    private bool _isDashFastFalling;
+    private float _dashFastFallTime;
+    private float _dashFastFallReleaseSpeed;
+
+
 
     private void Update()
     {
-        CheckGround();
+        CountTimers();
+        JumpChecks();
+        LandCheck();
+        DashCheck();
+        UpdateAnimations();
     }
 
-    private void CheckGround()
+
+
+
+    private void Awake()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastLength, groundLayer);
-        if (hit.collider != null)
+        _isFacingRight = true;
+
+        _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponentInChildren<Animator>();
+
+    }
+
+
+    private void FixedUpdate()
+    {
+        CollisionChecks();
+        Jump();
+        Fall();
+        Dash();
+
+
+        if (_isGrounded)
         {
-            isAirborne = false;
-            animator.SetBool("isAirborne", false);
-
-            slopeNormalPerpendicular = new Vector2(hit.normal.y, -hit.normal.x).normalized;
-            float angle = Vector2.Angle(hit.normal, Vector2.up);
-
-            if (angle > 5f && angle < 60f)
-            {
-                onStairs = true;
-                animator.SetBool("onStairs", true);
-            }
-            else
-            {
-                onStairs = false;
-                animator.SetBool("onStairs", false);
-            }
-            Debug.DrawRay(transform.position, Vector2.down * raycastLength, Color.red);
+            Move(MoveStats.GroundAcceleration, MoveStats.GroundDeceleration, InputManager.Movement);
         }
         else
         {
-            isAirborne = true;
-            animator.SetBool("isAirborne", true);
-            onStairs = false;
-            animator.SetBool("onStairs", false);
+            Move(MoveStats.AirAcceleration, MoveStats.AirDeceleration, InputManager.Movement);
+        }
+
+        ApplyVelocity();
+    }
+
+
+    private void ApplyVelocity()
+    {
+        VerticalVelocity = Mathf.Clamp(VerticalVelocity, -MoveStats.MaxFallSpeed, 50f);
+
+        _rb.linearVelocity = new Vector2(HorizontalVelocity, VerticalVelocity);
+    }
+
+    #region Movement
+
+    private void Move(float acceleration, float deceleration, Vector2 moveInput)
+    {
+        if (Mathf.Abs(moveInput.x) >= MoveStats.MoveThreshold)
+        {
+            // Sprawdź, czy gracz musi się obrócić
+            TurnCheck(moveInput);
+
+            // USTAWIENIE TYLKO BIEGU: 
+            // Zawsze używamy MaxRunSpeed, gdy moveInput.x nie jest zerem
+            float targetVelocity = moveInput.x * MoveStats.MaxRunSpeed;
+
+            HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
+        }
+        else
+        {
+            // Stan IDLE: Wyhamowanie do zera
+            HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, 0f, deceleration * Time.fixedDeltaTime);
         }
     }
 
-    public void moveLeft()
+    private void TurnCheck(Vector2 moveInput)
     {
-        PlayerRigidBody2D.linearVelocity = new Vector2(-movementSpeed, PlayerRigidBody2D.linearVelocity.y);
+        if (_isFacingRight && moveInput.x < 0)
+        {
+            Turn(false);
+        }
 
-        if (playerCombat != null && playerCombat.attackPoint != null)
-            playerCombat.attackPoint.localPosition = new Vector3(-attackOffset, 0, 0);
-
-        transform.localScale = new Vector3(-savedScale.x, savedScale.y, savedScale.z);
-
-        animator.SetFloat("speed", 1f);
+        else if (!_isFacingRight && moveInput.x > 0)
+        {
+            Turn(true);
+        }
     }
 
-    public void moveRight()
+    private void Turn(bool turnRight)
     {
-        PlayerRigidBody2D.linearVelocity = new Vector2(movementSpeed, PlayerRigidBody2D.linearVelocity.y);
-
-        if (playerCombat != null && playerCombat.attackPoint != null)
-            playerCombat.attackPoint.localPosition = new Vector3(attackOffset, 0, 0);
-
-        transform.localScale = new Vector3(savedScale.x, savedScale.y, savedScale.z);
-
-        animator.SetFloat("speed", 1f);
+        if (turnRight)
+        {
+            _isFacingRight = true;
+            transform.Rotate(0f, 180f, 0f);
+        }
+        else
+        {
+            _isFacingRight = false;
+            transform.Rotate(0f, -180f, 0f);
+        }
     }
 
-    public void stopMoving()
+    #endregion
+
+    #region Land/Fall
+
+    private void LandCheck()
     {
-        PlayerRigidBody2D.linearVelocity = new Vector2(0f, PlayerRigidBody2D.linearVelocity.y);
-        animator.SetFloat("speed", 0f);
+        // check landed
+
+        if ((_isJumping || _isFalling) && _isGrounded && VerticalVelocity <= 0f)
+        {
+            // then reset all flags
+            _isJumping = false;
+            _isFalling = false;
+            _isFastFalling = false;
+            _fastFallTime = 0f;
+            _isPastApexThreshold = false;
+
+            VerticalVelocity = Physics2D.gravity.y;
+        }
     }
 
-    public void jump()
+
+    private void Fall()
     {
-        // Physics Jump Logic
-        PlayerRigidBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        // Grawitacja gdy nie skaczemy (np. spadanie z krawędzi)
+        if (!_isGrounded && !_isJumping && !_isFastFalling)
+        {
+            if (!_isFalling) _isFalling = true;
+            VerticalVelocity += MoveStats.Gravity * Time.fixedDeltaTime;
+        }
+        else if (_isGrounded && !_isJumping)
+        {
+            VerticalVelocity = MoveStats.Gravity * Time.fixedDeltaTime;
+        }
 
-        // Animator Update
-        animator.SetBool("isAirborne", true);
-
-        Debug.Log("Jumping.");
     }
 
-    public void startJump()
+    #endregion
+
+    #region Jump
+
+    private void JumpChecks()
     {
-        isAirborne = true;
+
+        if (InputManager.JumpWasPressed) Debug.Log($"Skok naciśnięty! Grounded: {_isGrounded}, Coyote: {_coyoteTimer}");
+        // when pressed jump button
+        if (InputManager.JumpWasPressed)
+        {
+            _jumpBufferTimer = MoveStats.JumpBufferTime;
+            _jumpReleasedDuringBuffer = false;
+        }
+
+        // when released jump button
+
+        if (InputManager.JumpWasReleased)
+        {
+            if (_jumpBufferTimer > 0f)
+            {
+                _jumpReleasedDuringBuffer = true;
+            }
+
+            if (_isJumping && VerticalVelocity > 0f)
+            {
+                if (_isPastApexThreshold)
+                {
+                    // reached peak of the jump
+                    _isPastApexThreshold = false;
+                    _isFastFalling = true;
+                    _fastFallTime = MoveStats.TimeForUpwardsCancel;
+                    VerticalVelocity = 0f;
+                }
+                else
+                {
+                    _isFastFalling = true;
+                    _fastFallReleaseSpeed = VerticalVelocity;
+                }
+            }
+        }
+
+
+        // initiate jump with jump buffering and coyote time
+        if (_jumpBufferTimer > 0f && !_isJumping && (_isGrounded || _coyoteTimer > 0f))
+        {
+            InitiateJump();
+
+            if (_jumpReleasedDuringBuffer)
+            {
+                _isFastFalling = true;
+                _fastFallReleaseSpeed = VerticalVelocity;
+            }
+        }
     }
 
-    public void endJump()
+    private void InitiateJump()
     {
-        isAirborne = true;
+        if (!_isJumping)
+        {
+            _isJumping = true;
+        }
+        _jumpBufferTimer = 0f;
+        VerticalVelocity = MoveStats.InitialJumpVelocity;
     }
 
-    public void dash()
-    {
-        float direction = (PlayerRigidBody2D.linearVelocity.x >= 0) ? 1.0f : -1.0f;
-        PlayerRigidBody2D.linearVelocity = new Vector2(direction * dashSpeed, 0f);
 
-        SetAnimatorMovement(new Vector2(direction, 0));
-        Debug.Log("Dashing.");
+    private void Jump()
+    {
+        // 1. Grawitacja podczas skoku (wznoszenie i opadanie)
+        if (_isJumping)
+        {
+            if (_bumpedHead) _isFastFalling = true;
+
+            if (VerticalVelocity > 0f) // Wznoszenie
+            {
+                _apexPoint = Mathf.InverseLerp(MoveStats.InitialJumpVelocity, 0f, VerticalVelocity);
+
+                if (_apexPoint > MoveStats.ApexThreshold)
+                {
+                    if (!_isPastApexThreshold)
+                    {
+                        _isPastApexThreshold = true;
+                        _timePastApexThreshold = 0f;
+                    }
+
+                    _timePastApexThreshold += Time.fixedDeltaTime;
+                    if (_timePastApexThreshold < MoveStats.ApexHangTime)
+                        VerticalVelocity = 0f;
+                    else
+                        VerticalVelocity = -0.01f;
+                }
+                else if (!_isFastFalling) 
+                {
+                    VerticalVelocity += MoveStats.Gravity * Time.fixedDeltaTime;
+                    if (_isPastApexThreshold) _isPastApexThreshold = false;
+                }
+            }
+            else if (!_isFastFalling) // Normalne opadanie po skoku
+            {
+                VerticalVelocity += MoveStats.Gravity * MoveStats.GravityOnReleaseMutliplier * Time.fixedDeltaTime;
+            }
+        }
+
+        // 2. Obsługa szybkiego spadania (Jump Cut / Head Bump)
+        if (_isFastFalling)
+        {
+            if (_fastFallTime >= MoveStats.TimeForUpwardsCancel)
+            {
+                VerticalVelocity += MoveStats.Gravity * MoveStats.GravityOnReleaseMutliplier * Time.fixedDeltaTime;
+            }
+            else
+            {
+                VerticalVelocity = Mathf.Lerp(_fastFallReleaseSpeed, 0f, (_fastFallTime / MoveStats.TimeForUpwardsCancel));
+            }
+            _fastFallTime += Time.fixedDeltaTime;
+        }
+
+        // 3. Zastosowanie prędkości do Rigidbody
+        VerticalVelocity = Mathf.Clamp(VerticalVelocity, -MoveStats.MaxFallSpeed, 50f);
     }
 
-    public void startDash()
-    {
-        if (isDashing) return; // Prevent starting a new dash if already dashing
 
-        isDashing = true;
-        originalGravityScale = PlayerRigidBody2D.gravityScale;
-        PlayerRigidBody2D.gravityScale = 0f;
+    #endregion
+
+    #region Dash
+
+    private void DashCheck()
+    {
+        if (InputManager.DashWasPressed)
+        {
+            // ground dash
+
+            if (_isGrounded && _dashOnGroundTimer < 0 && !_isDashing)
+            {
+                InitiateDash();
+            }
+            // air dash
+            else if (!_isGrounded && !_isDashing && _numberOfDashesUsed < MoveStats.NumberOfDashes)
+            {
+                _isAirDashing = true;
+                InitiateDash();
+            }
+        }
     }
 
-    public void stopDash()
+    private void InitiateDash()
     {
-        isDashing = false;
-        PlayerRigidBody2D.gravityScale = originalGravityScale;
-        PlayerRigidBody2D.linearVelocity = new Vector2(0f, PlayerRigidBody2D.linearVelocity.y);
+        _dashDirection = InputManager.Movement;
+        Vector2 closestDirection = Vector2.zero;
+        float minDistance = Vector2.Distance(_dashDirection, MoveStats.DashDirections[0]);
+
+        for (int i = 0; i < MoveStats.DashDirections.Length; i++)
+        {
+            // if we hit exact direction, break immediately
+            if (_dashDirection == MoveStats.DashDirections[i])
+            {
+                closestDirection = _dashDirection;
+                break;
+            }
+
+            float distance = Vector2.Distance(_dashDirection, MoveStats.DashDirections[i]);
+
+            bool isDiagonal = (Mathf.Abs(MoveStats.DashDirections[i].x) == 1 && Mathf.Abs(MoveStats.DashDirections[i].y) == 1);
+            if (isDiagonal)
+            {
+                distance -= MoveStats.DashDiagonallyBias;
+            }
+
+            else if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestDirection = MoveStats.DashDirections[i];
+            }
+        }
+
+        // handle direction with zero input (dash in place)
+
+        if (closestDirection == Vector2.zero)
+        {
+            closestDirection = _isFacingRight ? Vector2.right : Vector2.left;
+        }
+
+        _dashDirection = closestDirection;
+        _numberOfDashesUsed++;
+        _isDashing = true;
+        _dashTimer = 0f;
+        _dashOnGroundTimer = MoveStats.TimeBetweenDashesOnGround;
     }
 
-    private void SetAnimatorMovement(Vector2 direction)
+
+    private void Dash()
     {
-        animator.SetFloat("speed", Mathf.Abs(direction.x));
+
+        if (_isDashing)
+        {
+            _dashTimer += Time.fixedDeltaTime;
+            if (_dashTimer > MoveStats.DashTime)
+            {
+                if (_isGrounded)
+                {
+                    ResetDashes();
+                }
+
+                _isAirDashing = false;
+                _isDashing = false;
+
+                if (!_isJumping)
+                {
+                    _dashFastFallTime = 0f;
+                    _dashFastFallReleaseSpeed = VerticalVelocity;
+
+                    if (!_isGrounded)
+                    {
+                        _isDashFastFalling = true;
+                    }
+                }
+
+                return;
+            }
+
+            HorizontalVelocity = _dashDirection.x * MoveStats.DashSpeed;
+
+            if (_dashDirection.y != 0f || _isAirDashing)
+            {
+                VerticalVelocity = _dashDirection.y * MoveStats.DashSpeed;
+            }
+        }
+
+        // handling dash cut time
+
+        else if (_isDashFastFalling)
+        {
+            if (VerticalVelocity > 0f)
+            {
+                if (_dashFastFallTime < MoveStats.DashTimeForUpwardsCancel)
+                {
+                    VerticalVelocity = Mathf.Lerp(_dashFastFallReleaseSpeed, 0f, (_dashFastFallTime / MoveStats.DashTimeForUpwardsCancel));
+                }
+                else if (_dashFastFallTime >= MoveStats.DashTimeForUpwardsCancel)
+                {
+                    VerticalVelocity += MoveStats.Gravity * MoveStats.DashGravityOnReleaseMutliplier * Time.fixedDeltaTime;
+                }
+
+                _dashFastFallTime += Time.fixedDeltaTime;
+            }
+            else
+            {
+                VerticalVelocity += MoveStats.Gravity * MoveStats.DashGravityOnReleaseMutliplier * Time.fixedDeltaTime;
+            }
+        }
     }
+
+    private void ResetDashes()
+    {
+        _numberOfDashesUsed = 0;
+
+    }
+    #endregion
+
+    #region Timers
+
+    private void CountTimers()
+    {
+        _jumpBufferTimer -= Time.deltaTime;
+
+        if (!_isGrounded)
+        {
+            _coyoteTimer -= Time.deltaTime;
+        }
+        else
+        {
+            _coyoteTimer = MoveStats.JumpCoyoteTime;
+
+        }
+
+        // dash timer
+        if (_isGrounded)
+        {
+            _dashOnGroundTimer -= Time.deltaTime;
+        }
+    }
+
+    #endregion
+
+
+    #region Collision Checks
+
+
+    private void IsGrounded()
+    {
+        Vector2 boxCastOrigin = new Vector2(_bodyCollider.bounds.center.x, _bodyCollider.bounds.min.y);
+        Vector2 boxCastSize = new Vector2(_bodyCollider.bounds.size.x, MoveStats.GroundDetectionRayLength);
+
+
+        _groundHit = Physics2D.BoxCast(boxCastOrigin, boxCastSize, 0f, Vector2.down, MoveStats.GroundDetectionRayLength, MoveStats.GroundLayer);
+        if (_groundHit.collider != null)
+        {
+            _isGrounded = true;
+        }
+        else
+        {
+            _isGrounded = false;
+        }
+
+    }
+
+
+    private void BumpedHead()
+    {
+        // Używamy _bodyCollider do wyznaczenia punktu startowego na górze postaci
+        Vector2 boxCastOrigin = new Vector2(_bodyCollider.bounds.center.x, _bodyCollider.bounds.max.y);
+
+        // Rozmiar pudełka detekcji - szerokość mnożymy przez HeadWidth dla lepszej kontroli
+        Vector2 boxCastSize = new Vector2(_bodyCollider.bounds.size.x * MoveStats.HeadWidth, MoveStats.HeadDetectionRayLength);
+
+        // Wykonujemy BoxCast w górę
+        _headHit = Physics2D.BoxCast(boxCastOrigin, boxCastSize, 0f, Vector2.up, MoveStats.HeadDetectionRayLength, MoveStats.GroundLayer);
+
+        if (_headHit.collider != null)
+        {
+            _bumpedHead = true;
+        }
+        else
+        {
+            _bumpedHead = false;
+        }
+
+        #region Debug Visualization
+
+        if (MoveStats.DebugShowHeadBumpBox)
+        {
+            float headWidth = MoveStats.HeadWidth;
+            Color rayColor = _bumpedHead ? Color.green : Color.red;
+
+            // Rysowanie wizualizacji w oknie Scene (3 linie tworzące obrys "pudełka")
+            Debug.DrawRay(new Vector2(boxCastOrigin.x - boxCastSize.x / 2, boxCastOrigin.y), Vector2.up * MoveStats.HeadDetectionRayLength, rayColor);
+            Debug.DrawRay(new Vector2(boxCastOrigin.x + boxCastSize.x / 2, boxCastOrigin.y), Vector2.up * MoveStats.HeadDetectionRayLength, rayColor);
+            Debug.DrawRay(new Vector2(boxCastOrigin.x - boxCastSize.x / 2, boxCastOrigin.y + MoveStats.HeadDetectionRayLength), Vector2.right * boxCastSize.x, rayColor);
+        }
+
+        #endregion
+    }
+
+    private void CollisionChecks()
+    {
+        IsGrounded();
+        BumpedHead();
+    }
+
+    #endregion
+
+    #region animations
+
+    private void UpdateAnimations()
+    {
+        _animator.SetFloat("Speed", Mathf.Abs(HorizontalVelocity));
+        _animator.SetBool("isGrounded", _isGrounded);
+        _animator.SetBool("isDashing", _isDashing);
+    }
+
+    #endregion
 }
