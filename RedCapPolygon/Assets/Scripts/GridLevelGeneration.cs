@@ -96,15 +96,15 @@ public class GridLevelGeneration : MonoBehaviour
     private readonly Dictionary<Vector2Int, int> directionWeights = new Dictionary<Vector2Int, int>
     {
         [Vector2Int.right] = 75,        //75
-        [Vector2Int.down] = 70,         //35
-        [Vector2Int.up] = 0,            //0
-        [Vector2Int.left] = 60          //10
+        [Vector2Int.down] = 70,         //70
+        [Vector2Int.up] = 30,            //0
+        [Vector2Int.left] = 90          //75
     };
     private readonly Dictionary<Vector2Int, int> directionWeightsBranch = new Dictionary<Vector2Int, int>
     {
         [Vector2Int.right] = 50,        //50
-        [Vector2Int.down] = 120,         //120
-        [Vector2Int.up] = 0,            //5
+        [Vector2Int.down] = 100,         //120
+        [Vector2Int.up] = 40,            //5
         [Vector2Int.left] = 50          //50
     };
     private readonly Vector2Int[] directions = {

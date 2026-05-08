@@ -876,7 +876,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -180, y: 20, z: -30}
+  m_LocalPosition: {x: -180, y: 20, z: -8.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -924,7 +924,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1171612596
 Transform:
   m_ObjectHideFlags: 0
@@ -1030,7 +1030,7 @@ Transform:
   m_GameObject: {fileID: 1346721484}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -180, y: 20, z: -30}
+  m_LocalPosition: {x: -180, y: 20, z: -8.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1145,9 +1145,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da53eb02515f8b445b2046dd647aa5de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  movementSpeed: 25
-  dashSpeed: 65
-  jumpForce: 40
+  movementSpeed: 12
+  dashSpeed: 32
+  jumpForce: 30
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1167,7 +1167,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -180, y: 20, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 844389451}
@@ -1340,7 +1340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePositionComposer
-  CameraDistance: 30
+  CameraDistance: 8.01
   DeadZoneDepth: 0
   Composition:
     ScreenPosition: {x: 0, y: 0}
@@ -1411,7 +1411,7 @@ Transform:
   m_GameObject: {fileID: 1832086110}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -180, y: 20, z: -30}
+  m_LocalPosition: {x: -180, y: 20, z: -8.01}
   m_LocalScale: {x: 1, y: 4.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1433,7 +1433,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1947595186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1492,6 +1492,121 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2088256234
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2088256236}
+  - component: {fileID: 2088256235}
+  m_Layer: 0
+  m_Name: LevelManager (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2088256235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088256234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b46560917c409064fb7d0256a776f53a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridLevelGeneration
+  prefabsForTypes:
+  - inspectorName: Start
+    Type: 0
+    Variants:
+    - Prefab: {fileID: 8682868580490486916, guid: 7bfe12eacb7b776458e7f7d68563a31e, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 1
+  - inspectorName: Combat
+    Type: 1
+    Variants:
+    - Prefab: {fileID: 3984513939971681388, guid: fa6c60ad0d6a21a42ace1e45081b162d, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
+  - inspectorName: Boss
+    Type: 4
+    Variants:
+    - Prefab: {fileID: 5242411369446500188, guid: 50b8f8ca0f7be224b93c2e356018244a, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
+  - inspectorName: Transition
+    Type: 3
+    Variants:
+    - Prefab: {fileID: 5242411369446500188, guid: 98a0cbbcecb981f41847d40c83e40687, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
+  - inspectorName: Upgrade Room
+    Type: 2
+    Variants:
+    - Prefab: {fileID: 5242411369446500188, guid: eb2a70d3206dafc488eb67f9800507e9, type: 3}
+      Up: 0
+      Down: 0
+      Left: 0
+      Right: 0
+  requiredBranches:
+  - branchName: UpgradeRoom1
+    length: 10
+    specialRoomType: 2
+  - branchName: UpgradeRoom2
+    length: 10
+    specialRoomType: 2
+  criticalPathRecipe:
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 0100000003000000
+  - possibleRooms: 04000000
+  roomSize: {x: 30, y: 20}
+--- !u!4 &2088256236
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088256234}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1505,3 +1620,4 @@ SceneRoots:
   - {fileID: 1422302599}
   - {fileID: 1171612596}
   - {fileID: 839139479}
+  - {fileID: 2088256236}
