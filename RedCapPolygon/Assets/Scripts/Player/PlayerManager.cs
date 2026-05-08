@@ -41,6 +41,6 @@ public class PlayerManager : MonoBehaviour
         _maxHealth += _stats.HealthPerLevel;
         _currentHealth = _maxHealth; // Full heal
 
-        Debug.Log($"Level Up! Obecny poziom: {_currentLevel}");
+        Debug.Log($"Level Up! Current Level: {_currentLevel}");
     }
 }
