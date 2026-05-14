@@ -157,11 +157,11 @@ MonoBehaviour:
   sockets:
   - spawnPoint: {fileID: 882718649132330238}
     possibleEntities:
-    - {fileID: 7066044687605543480, guid: f91f117e0791e6444a3780375876b547, type: 3}
+    - {fileID: 4580312081006212664, guid: 322b14702cfffe24088104d3839c78f9, type: 3}
     spawnChance: 100
   - spawnPoint: {fileID: 6943785102484716087}
     possibleEntities:
-    - {fileID: 7066044687605543480, guid: f91f117e0791e6444a3780375876b547, type: 3}
+    - {fileID: 4580312081006212664, guid: 322b14702cfffe24088104d3839c78f9, type: 3}
     spawnChance: 100
 --- !u!1 &4893476583325104761
 GameObject:

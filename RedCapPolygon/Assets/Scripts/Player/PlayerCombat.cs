@@ -104,9 +104,7 @@ public class PlayerCombat : MonoBehaviour
         {
             Debug.Log("Hit " + enemy.name);
 
-            // hit enemy logic here
-
-            // e.g. enemy.GetComponent<EnemyHealth>().TakeDamage(damage);
+                //enemy.GetComponent<EnemyHealth>().TakeDamage(damage);
         }
     }
 }

@@ -41,7 +41,7 @@ public class InRoomGenerator : MonoBehaviour
                     // Spawnujemy wroga
                     GameObject newEnemy = Instantiate(entityToSpawn, socket.spawnPoint.position, socket.spawnPoint.rotation);
 
-                    newEnemy.transform.localScale = Vector3.one;
+                    //newEnemy.transform.localScale = Vector3.one;
                 }
             }
         }
