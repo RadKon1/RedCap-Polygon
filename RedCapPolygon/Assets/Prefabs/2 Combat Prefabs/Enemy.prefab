@@ -54,10 +54,10 @@ MonoBehaviour:
   speed: 2.4
   groundMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   playerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!212 &4492718730026710842
 SpriteRenderer:
   serializedVersion: 2

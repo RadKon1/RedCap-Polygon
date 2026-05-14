@@ -14,7 +14,7 @@ public class PlayerCombat : MonoBehaviour
     private float _lastDashAttackTime;
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
