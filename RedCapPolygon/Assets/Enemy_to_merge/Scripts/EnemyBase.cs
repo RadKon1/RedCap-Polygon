@@ -9,15 +9,21 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private int damage = 15;
     [SerializeField] private float speed = 2.4f;
+    [SerializeField] private float memoryDuration = 2f;
     [Header("References")]
     private Rigidbody2D _rb;
     private BoxCollider2D _col;
+    private Animator _anim;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private LayerMask playerMask;
-    
+        
     private Vector2 _boxWallScale = new Vector2(2f, 1f);
     private Vector3 _frontWallOffset = new Vector3(1.5f, 0f, 0f);
     private Vector3 _frontWallCheckPos;
+    
+    private Vector2 _detectionScale = new Vector2(15f, 6f);
+    private Vector3 _detectionOffset = new Vector3(3f, 0f, 0f);
+    private Vector3 _detectionCheckPos;
     
     private Vector2 _attackHitScale = new Vector2(1.2f, 1f);
     private Vector3 _attackHitOffset = new Vector3(1.5f, 0f, 0f);
@@ -28,9 +34,11 @@ public class EnemyBase : MonoBehaviour
     private Vector3 _edgeCheckPos;
     
     private Transform _player;
+    private Vector3 _lastPlayerPosition;
+    private float _lostPlayerTimer = 0f;
     private float _time = 0f;
-    private float _attackTimer = 0f;
-    private float _attackCooldown = 2.5f;
+    private float _attackTimer = 0.5f;
+    private float _attackCooldown = 1.2f;
     private float _stateDuration = 2f;
     private float _direction = 1f;
     private float _rayLenght = 0.05f;
@@ -38,13 +46,24 @@ public class EnemyBase : MonoBehaviour
     private float _attackRange = 1.8f;
     private bool isGrounded;
     private bool isPlayerDetected;
+    private bool hasHitPlayer;
+    private bool isAggresive;
     private State _state;
-
+    
+    private AttackState _attackState;
+    private float _windupDuration = 0.5f;
+    private float _activeDuration = 0.2f;
+    private float _recoveryDuration = 1f;
+    private float _attackDirection;
+    private float _phaseTimer = 0f;
+    private bool isAnimationPlayed;
+    
     void Awake()
     {
         health = maxHealth;
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
+        _anim = GetComponent<Animator>();
         groundMask = LayerMask.GetMask("Ground");
         playerMask = LayerMask.GetMask("Player");
         _state = State.Idle;
@@ -78,9 +97,14 @@ public class EnemyBase : MonoBehaviour
                 break;
             
             case State.Move:
-                WallCheck();
-                EdgeCheck();
+
+                if (HasWall() || HasEdge())
+                {
+                    _direction *= -1;
+                    Rotate();
+                }
                 Move();
+                
                 if (_time >= _stateDuration)
                 {
                     _state = State.Idle;
@@ -89,26 +113,75 @@ public class EnemyBase : MonoBehaviour
                 }
                 break;
             
-            case State.Attack:
+            case State.Chase:
+                
                 if (_player == null)
                 {
                     _state = State.Move;
                     break;
                 }
+                
+                Vector3 targetPos;
+                if (_player != null)
+                {
+                    targetPos = _player.position;
+                }
+                else
+                {
+                    targetPos = _lastPlayerPosition;
+                }
                 _distance = Vector2.Distance(transform.position, _player.position);
-                _direction = _player.position.x > transform.position.x ?  1f : -1f;
+                float xDifference = _player.position.x - transform.position.x;
+                if (Mathf.Abs(xDifference) > 0.5f)
+                {
+                    _direction = Mathf.Sign(xDifference);
+                }
+                
+                if (HasWall() || HasEdge())
+                {
+                    _state = State.Move;
+                    break;
+                }
+                
                 Rotate();
                 
-                if (_distance > _attackRange)
+                Move();
+                
+                if (_distance < _attackRange)
                 {
-                    Move();   
-                } else
+                    _state = State.Attack;
+                }
+                
+                break;
+            
+            case State.Attack:
+                
+                if (_player == null)
                 {
                     _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
                     Attack();
+                    if (_attackState == AttackState.None)
+                    {
+                        _state = State.Move;
+                    }
+
+                    break;
                 }
+                _distance = Vector2.Distance(transform.position, _player.position);
+                if (_distance > _attackRange && _attackState == AttackState.None)
+                {
+                    _state = State.Chase;
+                    break;
+                }
+
+                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+                Attack();
+                
                 break;
         }
+
+        _anim.SetFloat("Speed", Mathf.Abs(_rb.linearVelocity.x));
+        _anim.SetBool("IsMoving", Mathf.Abs(_rb.linearVelocity.x) > 0.1f);
     }
 
     void Move()
@@ -119,39 +192,105 @@ public class EnemyBase : MonoBehaviour
     void Rotate()
     {
 
-            transform.localScale = new Vector3(_direction, transform.localScale.y, transform.localScale.z);
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _direction, transform.localScale.y, transform.localScale.z);
     }
 
     void Attack()
     {
         _attackTimer += Time.deltaTime;
-        _attackHitPos = transform.position + new Vector3 (_attackHitOffset.x * _direction, _attackHitOffset.y, _attackHitOffset.z);
+        _phaseTimer += Time.deltaTime;
 
-        bool AttackReady = _attackTimer > _attackCooldown ? true : false;
-        if (AttackReady)
+        switch (_attackState)
         {
-            Debug.Log("Attack!");
-            Collider2D hit = Physics2D.OverlapBox(
-                _attackHitPos, _attackHitScale, 0f, playerMask);
-            
-            if (hit != null)
-            {
-                PlayerTemp playerHealth = hit.GetComponent<PlayerTemp>();
-                
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(damage);
-                }
-            }
-            _attackTimer = 0f;
-        }
+            case AttackState.None:
 
+                if (_attackTimer >= _attackCooldown)
+                {
+                    isAnimationPlayed = false;
+                    _attackState = AttackState.Windup;
+                    _phaseTimer = 0f;
+                    isAnimationPlayed = false;
+                    
+                    _attackDirection = _direction;
+                    _attackHitPos = transform.position + new Vector3(
+                        _attackHitOffset.x * _attackDirection,
+                        _attackHitOffset.y,
+                        _attackHitOffset.z
+                    );
+
+                    Debug.Log("WINDUP");
+                }
+
+                break;
+
+            case AttackState.Windup:
+
+                if (!isAnimationPlayed)
+                {
+                    _anim.SetTrigger("Attack");
+                    isAnimationPlayed = true;
+                }
+                if (_phaseTimer >= _windupDuration)
+                {
+                    _attackState = AttackState.Active;
+                    _phaseTimer = 0f;
+
+                    Debug.Log("ACTIVE");
+                }
+
+                break;
+
+            case AttackState.Active:
+
+                Collider2D hit = Physics2D.OverlapBox(
+                    _attackHitPos,
+                    _attackHitScale,
+                    0f,
+                    playerMask
+                );
+                if (hit != null && !hasHitPlayer)
+                {
+                    PlayerTemp playerHealth = hit.GetComponent<PlayerTemp>();
+
+                    if (playerHealth != null)
+                    {
+                        playerHealth.TakeDamage(damage);
+                    }
+
+                    hasHitPlayer = true;
+                }
+
+                if (_phaseTimer >= _activeDuration)
+                {
+                    _attackState = AttackState.Recovery;
+                    _phaseTimer = 0f;   
+                }
+
+                break;
+
+            case AttackState.Recovery:
+                
+                if (_phaseTimer >= _recoveryDuration)
+                {
+                    _attackState = AttackState.None;
+                    _attackTimer = 0f;
+                    _phaseTimer = 0f;
+                    Debug.Log("RECOVERY END");
+                }
+
+                break;
+        }
     }
     
     public void TakeDamage(int damage)
     {
-        // PlaceHolder
         health -= damage;
+        _attackState = AttackState.None;
+        _phaseTimer = 0f;
+        
+        // Death
+        if (health <= 0)
+            Destroy(gameObject);
     }
 
     #region  Collision
@@ -172,45 +311,98 @@ public class EnemyBase : MonoBehaviour
         isGrounded = cRc.collider != null || lRc.collider != null || rRc.collider != null;
     }
 
-    void WallCheck()
+    bool HasWall()
     {
-        _frontWallCheckPos = transform.position + _frontWallOffset * _direction;
-        bool isFrontWallHit = Physics2D.OverlapBox(_frontWallCheckPos, _boxWallScale, 0, groundMask);
-        if (isFrontWallHit)
-        {
-            _direction *= -1;
-            Rotate();
-        }
+            _frontWallCheckPos = new Vector2(
+            transform.position.x + (_col.bounds.extents.x + 0.1f) * _direction,
+            transform.position.y
+        );
+        bool isFrontWallHit = Physics2D.OverlapBox(
+            _frontWallCheckPos, 
+            _boxWallScale, 
+            0, 
+            groundMask);
+        
+        return isFrontWallHit;
     }
 
-    void EdgeCheck()
+    bool HasEdge()
     {
-        _edgeCheckPos = transform.position + new Vector3 (_edgeOffset.x * _direction,_edgeOffset.y, _edgeOffset.z);
-        bool isEdgeHit = !Physics2D.OverlapBox(_edgeCheckPos, _boxEdgeScale, 0, groundMask);
-        if (isEdgeHit)
-        {
-            _direction *= -1;
-            Rotate();
-        }
+        float checkX =
+            _col.bounds.extents.x + 0.2f;
+
+        float checkY =
+            _col.bounds.extents.y + 0.1f;
+
+        Vector2 edgeCheckPos = new Vector2(
+            transform.position.x + checkX * _direction,
+            transform.position.y - checkY
+        );
+
+        bool isEdgeHit = !Physics2D.OverlapBox(
+            edgeCheckPos,
+            _boxEdgeScale,
+            0,
+            groundMask
+        );
+
+        _edgeCheckPos = edgeCheckPos;
+
+        return isEdgeHit;
     }
     
     void Detection()
     {
-        Collider2D playerCollider = Physics2D.OverlapCircle(transform.position, 3f, playerMask);
+        _detectionCheckPos = transform.position + _detectionOffset * _direction;
+        Collider2D playerCollider = Physics2D.OverlapBox(_detectionCheckPos, _detectionScale, 0f, playerMask);
         isPlayerDetected = playerCollider != null;
-        if (isPlayerDetected)
+        
+        if (playerCollider != null)
         {
-            _player = playerCollider.transform;
-            Debug.Log("Player Detected");
-            if (_state != State.Attack)
+            
+            Transform detectedPlayer = playerCollider.transform;
+            Vector2 directionToPlayer = (detectedPlayer.position - transform.position).normalized;
+            float distanceToPlayer = Vector2.Distance(transform.position, detectedPlayer.position);
+            
+            RaycastHit2D wallHit = Physics2D.Raycast(
+                transform.position,
+                directionToPlayer,
+                distanceToPlayer,
+                groundMask);
+            
+            float directionToPlayerX = detectedPlayer.position.x - transform.position.x;
+            bool isPlayerInFront = Math.Sign(directionToPlayerX) == _direction;
+            bool canSeePlayer = wallHit.collider == null;
+            bool alreadyAggro = _state == State.Chase || _state == State.Attack;
+
+            if (canSeePlayer && (isPlayerInFront || alreadyAggro))
             {
-                _state = State.Attack;   
+                isAggresive = true;
+                _player = detectedPlayer;
+                _lastPlayerPosition = _player.position;
+                _lostPlayerTimer = 0f;
+                
+                if (_state == State.Idle || _state == State.Move)
+                {
+                    _state = State.Chase;   
+                }
             }
+            
         }
 
-        if (playerCollider == null)
+        if (_player != null)
         {
-            _player = null;
+            _lostPlayerTimer += Time.deltaTime;
+            Debug.Log("PlayerLost");
+            if (_lostPlayerTimer >= memoryDuration)
+            {
+                isAggresive = false;
+                _player = null;
+                if (_state == State.Chase)
+                {
+                    _state = State.Move;
+                }
+            }
         }
     }
     
@@ -219,9 +411,10 @@ public class EnemyBase : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(_frontWallCheckPos, _boxWallScale);
         Gizmos.DrawWireCube(_edgeCheckPos, _boxEdgeScale);
-        Gizmos.DrawWireSphere(transform.position, 3f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(_detectionCheckPos, _detectionScale);
 
-        if (_attackTimer >= _attackCooldown - 1f)
+        if (_attackState == AttackState.Windup || _attackState == AttackState.Active)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawCube(_attackHitPos,  _attackHitScale);
@@ -234,6 +427,15 @@ public class EnemyBase : MonoBehaviour
     {
         Idle,
         Move,
+        Chase,
         Attack
+    }
+
+    enum AttackState
+    {
+        None,
+        Windup,
+        Active,
+        Recovery
     }
 }
