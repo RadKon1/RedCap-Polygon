@@ -36,7 +36,7 @@ MonoBehaviour:
   JumpBufferTime: 0.125
   JumpCoyoteTime: 0.1
   DashTime: 0.11
-  DashSpeed: 70
+  DashSpeed: 40
   TimeBetweenDashesOnGround: 0.225
   NumberOfDashes: 2
   DashDiagonallyBias: 0.4

@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 459447988339394865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6056012102859045660
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7223744088490486833}
+  m_Layer: 6
+  m_Name: PlayerSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7223744088490486833
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6056012102859045660}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.043, y: 0.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 459447988339394865}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6186865084827161883
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 459447988339394865}
   - component: {fileID: 150666583588949242}
+  - component: {fileID: -7272300666552703462}
   m_Layer: 6
   m_Name: Prefab Start
   m_TagString: Untagged
@@ -198,6 +230,7 @@ Transform:
   - {fileID: 469388357322457496}
   - {fileID: 2746436712206374545}
   - {fileID: 5379262288260519848}
+  - {fileID: 7223744088490486833}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &150666583588949242
@@ -229,6 +262,23 @@ MonoBehaviour:
     direction: {x: 0, y: 1}
     solidWall: {fileID: 7655630129529150928}
     doorOpening: {fileID: 7183491963495748156}
+--- !u!114 &-7272300666552703462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682868580490486916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c3eb4eb39130a64c93ce109bfc95f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InRoomGenerator
+  sockets:
+  - spawnPoint: {fileID: 7223744088490486833}
+    possibleEntities:
+    - {fileID: 2791733600983461182, guid: 2e77e4ca2f7c99349bacf012c3dc6c5c, type: 3}
+    spawnChance: 0
 --- !u!1001 &333730643921177928
 PrefabInstance:
   m_ObjectHideFlags: 0
