@@ -160,8 +160,63 @@ MonoBehaviour:
   - inspectorName: Combat
     Type: 1
     Variants:
-    - Prefab: {fileID: 3984513939971681388, guid: fa6c60ad0d6a21a42ace1e45081b162d, type: 3}
+    - Prefab: {fileID: 5242411369446500188, guid: 6989e742c3bd05b458e0076d69d49444, type: 3}
       Up: 1
+      Down: 1
+      Left: 1
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 98a0cbbcecb981f41847d40c83e40687, type: 3}
+      Up: 0
+      Down: 0
+      Left: 1
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: d9e98f56b446a6a4b88cd0bd00d7c6ee, type: 3}
+      Up: 1
+      Down: 1
+      Left: 0
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: bf174a693bbde6a429c10671b73b351e, type: 3}
+      Up: 1
+      Down: 0
+      Left: 1
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: 9b7fcd594084c4248bcfa93d2a80dde3, type: 3}
+      Up: 1
+      Down: 0
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 2d3d22c7efba9d34b8473fef7e1175f5, type: 3}
+      Up: 1
+      Down: 0
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 44bc1e3022d3260459aff574c40e26e2, type: 3}
+      Up: 0
+      Down: 1
+      Left: 1
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: 361795d4e943d7b4dbf493b2e22f316a, type: 3}
+      Up: 0
+      Down: 1
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 1d6415ea399de9340bf766a3619c99e0, type: 3}
+      Up: 1
+      Down: 0
+      Left: 1
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: f5fc408c8cf4d6a408adfc624c5133b2, type: 3}
+      Up: 1
+      Down: 1
+      Left: 1
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: 4c6a7b2df89b1d74bb169ee335719099, type: 3}
+      Up: 1
+      Down: 1
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: a2565f3b34a34d740b130c2063b6662f, type: 3}
+      Up: 0
       Down: 1
       Left: 1
       Right: 1
@@ -176,8 +231,63 @@ MonoBehaviour:
   - inspectorName: Transition
     Type: 3
     Variants:
-    - Prefab: {fileID: 5242411369446500188, guid: 98a0cbbcecb981f41847d40c83e40687, type: 3}
+    - Prefab: {fileID: 5242411369446500188, guid: 6989e742c3bd05b458e0076d69d49444, type: 3}
       Up: 1
+      Down: 1
+      Left: 1
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 98a0cbbcecb981f41847d40c83e40687, type: 3}
+      Up: 0
+      Down: 0
+      Left: 1
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: d9e98f56b446a6a4b88cd0bd00d7c6ee, type: 3}
+      Up: 1
+      Down: 1
+      Left: 0
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: bf174a693bbde6a429c10671b73b351e, type: 3}
+      Up: 1
+      Down: 0
+      Left: 1
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: 9b7fcd594084c4248bcfa93d2a80dde3, type: 3}
+      Up: 1
+      Down: 0
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 2d3d22c7efba9d34b8473fef7e1175f5, type: 3}
+      Up: 1
+      Down: 0
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 44bc1e3022d3260459aff574c40e26e2, type: 3}
+      Up: 0
+      Down: 1
+      Left: 1
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: 361795d4e943d7b4dbf493b2e22f316a, type: 3}
+      Up: 0
+      Down: 1
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: 1d6415ea399de9340bf766a3619c99e0, type: 3}
+      Up: 1
+      Down: 0
+      Left: 1
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: f5fc408c8cf4d6a408adfc624c5133b2, type: 3}
+      Up: 1
+      Down: 1
+      Left: 1
+      Right: 0
+    - Prefab: {fileID: 5242411369446500188, guid: 4c6a7b2df89b1d74bb169ee335719099, type: 3}
+      Up: 1
+      Down: 1
+      Left: 0
+      Right: 1
+    - Prefab: {fileID: 5242411369446500188, guid: a2565f3b34a34d740b130c2063b6662f, type: 3}
+      Up: 0
       Down: 1
       Left: 1
       Right: 1
