@@ -13,6 +13,8 @@ public class PlayerManager : MonoBehaviour
     {
         // initializing health based on stats
         _health = GetComponent<Health>();
+        // reset number of coins on game start
+        _stats.NumberOfCoins = 0;
         UpdatePlayerHealth();
 
         _currentLevel = 1;
