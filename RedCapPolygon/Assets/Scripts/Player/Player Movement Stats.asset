@@ -37,15 +37,15 @@ MonoBehaviour:
   JumpCoyoteTime: 0.1
   DashTime: 0.11
   DashSpeed: 40
-  TimeBetweenDashesOnGround: 0.225
+  TimeBetweenDashesOnGround: 1
   NumberOfDashes: 2
   DashDiagonallyBias: 0.4
   DashGravityOnReleaseMutliplier: 1
   DashTimeForUpwardsCancel: 0.027
-  DebugShowIsGroundedBox: 0
+  DebugShowIsGroundedBox: 1
   DebugShowHeadBumpBox: 0
   ShowWalkJumpArc: 1
-  ShowRunJumpArc: 0
+  ShowRunJumpArc: 1
   StopOnCollision: 1
   DrawRight: 1
   ArcResolution: 20
