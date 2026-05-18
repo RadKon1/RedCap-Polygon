@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
@@ -6,12 +7,14 @@ public class Health : MonoBehaviour
     private float _currentHealth;
     private float _maxHealth;
     private bool _isInitialized = false;
+    private bool _isDead = false;
 
     public void InitializeHealth(float startingHealth)
     {
         _currentHealth = startingHealth;
         _maxHealth = startingHealth;
         _isInitialized = true;
+        _isDead = false;
     }
 
     private void Awake()
@@ -21,8 +24,11 @@ public class Health : MonoBehaviour
             InitializeHealth(maxHealthFromInspector);
         }
     }
+
     public void TakeDamage(float damageAmount)
     {
+        if (_isDead) return;
+
         _currentHealth -= damageAmount;
 
         Debug.Log($"{gameObject.name} dostał {damageAmount} dmg. Zostało HP: {_currentHealth}");
@@ -35,17 +41,22 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
-        if (CompareTag("Player"))
+        if (_isDead) return;
+        _isDead = true;
+
+        if (gameObject.CompareTag("Player") || GetComponent<PlayerManager>() != null)
         {
-            Debug.Log("Gracz zginął! Ekran Game Over...");
+            Debug.Log("POTWIERDZONE: Gracz zginął! Ładowanie sceny: GameOverScene");
+            SceneManager.LoadScene("GameOverScene");
         }
         else
         {
+            Debug.Log($"Przeciwnik {gameObject.name} pokonany. Przyznawanie XP graczowi.");
+
             PlayerManager pm = FindObjectOfType<PlayerManager>();
             if (pm != null)
             {
-                pm.AddXP(25f); // 25 XP per enemy for now
-                Debug.Log("Enemy defeated! Player gains 25 XP.");
+                pm.AddXP(25f);
             }
 
             Destroy(gameObject);
