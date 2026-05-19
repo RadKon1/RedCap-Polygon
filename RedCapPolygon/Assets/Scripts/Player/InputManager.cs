@@ -37,7 +37,6 @@ public class InputManager : MonoBehaviour
             _dashAction = PlayerInput.actions["Dash"];
             _lightAttackAction = PlayerInput.actions["LightAttack"];
             _heavyAttackAction = PlayerInput.actions["HeavyAttack"];
-            _dashAttackAction = PlayerInput.actions["DashAttack"];
         }
         else
         {
@@ -58,7 +57,6 @@ public class InputManager : MonoBehaviour
 
         LightAttackWasPressed = _lightAttackAction.WasPressedThisFrame();
         HeavyAttackWasPressed = _heavyAttackAction.WasPressedThisFrame();
-        DashAttackWasPressed = _dashAttackAction.WasPressedThisFrame();
     }
 }
 

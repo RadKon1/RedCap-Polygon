@@ -26,8 +26,6 @@ public class PlayerCombat : MonoBehaviour
     {
         CombatStats.LightAttackDamage += 5;
         CombatStats.HeavyAttackDamage += 15;
-        CombatStats.DashAttackDamage += 10;
-
         Debug.Log($"Combat stats have increased");
     }
 
@@ -40,10 +38,6 @@ public class PlayerCombat : MonoBehaviour
         if (InputManager.HeavyAttackWasPressed)
         {
             PerformHeavyAttack();
-        }
-        if (InputManager.DashAttackWasPressed)
-        {
-            PerformDashAttack();
         }
     }
 
@@ -59,9 +53,6 @@ public class PlayerCombat : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(_attackPoint.position, CombatStats.HeavyAttackHitBox);
 
-        // Dash Attack
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(_attackPoint.position, CombatStats.DashAttackHitBox);
     }
 
     public bool CanLightAttack()
@@ -72,10 +63,7 @@ public class PlayerCombat : MonoBehaviour
     {
         return Time.time >= _lastHeavyAttackTime + CombatStats.HeavyAttackRate;
     }
-    public bool CanDashAttack()
-    {
-        return Time.time >= _lastDashAttackTime + CombatStats.DashAttackRate;
-    }
+
     public void PerformLightAttack()
     {
         if (CanLightAttack())
@@ -96,17 +84,6 @@ public class PlayerCombat : MonoBehaviour
             _animator.SetTrigger("HeavyAttack");
         }
     }
-    public void PerformDashAttack()
-    {
-        if (CanDashAttack())
-        {
-            Debug.Log("Performed Dash Attack with damage: " + CombatStats.DashAttackDamage);
-            PerformAttack(CombatStats.DashAttackHitBox, CombatStats.DashAttackDamage);
-            _lastDashAttackTime = Time.time;
-            _animator.SetTrigger("DashAttack");
-        }
-    }
-
    private  void PerformAttack(float attackHitbox, int damage)
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, attackHitbox, _enemyLayers);
