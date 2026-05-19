@@ -253,21 +253,8 @@ public class EnemyBase : MonoBehaviour
                     0f,
                     playerMask
                 );
-                //if (hit != null && !hasHitPlayer)
-                //{
-                //    Health playerHealth = hit.GetComponent<Health>();
-
-                //    if (playerHealth != null)
-                //    {
-                //        playerHealth.TakeDamage(damage);
-                //        Debug.Log("<color=orange>GRACZ OTRZYMAŁ DMG!</color>");
-                //    }
-
-                //    hasHitPlayer = true;
-                //}
                 if (hit != null && !hasHitPlayer)
                 {
-                    // LOGUJEMY CO DOKŁADNIE TRAFILIŚMY
                     Debug.Log($"WRÓG UDERZYŁ W: {hit.gameObject.name} (Tag: {hit.gameObject.tag})");
 
                     Health playerHealth = hit.GetComponent<Health>();

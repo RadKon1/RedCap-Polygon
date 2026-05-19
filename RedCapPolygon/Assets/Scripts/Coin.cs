@@ -7,7 +7,7 @@ public class Coin : MonoBehaviour
     [SerializeField] private PlayerStats _playerStats;
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") || GetComponent<PlayerManager>() != null)
+        if (other.CompareTag("Player") || other.GetComponent<PlayerManager>() != null)
         {
             if (_playerStats != null)
             {
@@ -18,8 +18,8 @@ public class Coin : MonoBehaviour
             {
                 Debug.LogWarning("PlayerStats reference is missing on Coin.");
             }
-            Destroy(gameObject); // Remove the coin from the scene
 
         }
+        Destroy(gameObject); // Remove the coin from the scene
     }
 }
