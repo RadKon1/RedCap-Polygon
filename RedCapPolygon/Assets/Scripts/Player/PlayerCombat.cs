@@ -15,6 +15,20 @@ public class PlayerCombat : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
+
+        if (CombatStats != null)
+        {
+            CombatStats = Instantiate(CombatStats);
+        }
+    }
+
+    public void LevelUp()
+    {
+        CombatStats.LightAttackDamage += 5;
+        CombatStats.HeavyAttackDamage += 15;
+        CombatStats.DashAttackDamage += 10;
+
+        Debug.Log($"Combat stats have increased");
     }
 
     private void Update()
