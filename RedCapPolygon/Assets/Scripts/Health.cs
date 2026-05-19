@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class Health : MonoBehaviour
 {
     [SerializeField] private float maxHealthFromInspector = 50f;
+    [SerializeField] private UIManager _uiManager;
     private float _currentHealth;
     private float _maxHealth;
     private bool _isInitialized = false;
@@ -30,6 +31,11 @@ public class Health : MonoBehaviour
         if (_isDead) return;
 
         _currentHealth -= damageAmount;
+
+        if (_uiManager != null)
+        {
+            _uiManager.UpdateHealthUI((int)_currentHealth);
+        }
 
         Debug.Log($"{gameObject.name} dostał {damageAmount} dmg. Zostało HP: {_currentHealth}");
 

@@ -14,12 +14,6 @@ public class PlayerCombatStats : ScriptableObject
     [Range(0.1f, 2f)] public float HeavyAttackRate = 1f;
     [Range(0.1f, 7f)] public float HeavyAttackHitBox = 2f;
 
-    [Header("Dash Attack")]
-    [Range(1, 100)] public int DashAttackDamage = 15;
-    [Range(0.1f, 2f)] public float DashAttackRate = 1.5f;
-    [Range(0.1f, 7f)] public float DashAttackHitBox = 3f;
-    [Range(0.01f, 0.3f)] public float DashInvincibilityTime = 0.1f;
-
     [Header("Combat Physics")]
     [Range(0f, 100f)] public float KnockbackForce = 15f;
     [Range(0.01f, 0.3f)] public float HitStopTime = 0.05f;

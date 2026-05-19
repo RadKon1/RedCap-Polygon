@@ -21,5 +21,7 @@ public class Coin : MonoBehaviour
 
         }
         Destroy(gameObject); // Remove the coin from the scene
+        // trying to make it work for presentation
+        _playerStats.NumberOfCoins++;
     }
 }

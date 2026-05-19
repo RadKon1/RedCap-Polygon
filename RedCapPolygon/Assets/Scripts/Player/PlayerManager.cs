@@ -22,8 +22,8 @@ public class PlayerManager : MonoBehaviour
     
     private void UpdatePlayerHealth()
     {
-        float newMax = _stats.BaseMaxHealth + (_stats.HealthPerLevel * (_currentLevel - 1));
-        _health.InitializeHealth(newMax);
+        //float newMax = _stats.BaseMaxHealth + (_stats.HealthPerLevel * (_currentLevel - 1));
+        //_health.InitializeHealth(newMax);
     }
     public void AddXP(float amount)
     {
