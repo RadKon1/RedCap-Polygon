@@ -437,6 +437,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerOrb 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4058071597749744491, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 7582954085160758549, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -480,8 +484,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4058071597749744491, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 663266681424526257}
+    - targetCorrespondingSourceObject: {fileID: 4058071597749744491, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3209934002775674084}
   m_SourcePrefab: {fileID: 100100000, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}
+--- !u!1 &3012548837054961461 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4058071597749744491, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}
+  m_PrefabInstance: {fileID: 1269895982017209438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &663266681424526257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3012548837054961461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15abc6b6c1d1ede4caffbd1b9213d058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Orb
+--- !u!58 &3209934002775674084
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3012548837054961461}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: -0.035613578}
+  m_Radius: 0.025888734
 --- !u!4 &8692935993836063051 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7582954085160758549, guid: 65c0197acc91fad4382d734c0f03a877, type: 3}

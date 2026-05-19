@@ -70,15 +70,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7413564948328177697, guid: d2480faed4765cd45b24f3c78ecdb169, type: 3}
       propertyPath: m_Name
-      value: Platform (1) Variant
+      value: Platform Thick
       objectReference: {fileID: 0}
     - target: {fileID: 7629508826163081903, guid: d2480faed4765cd45b24f3c78ecdb169, type: 3}
       propertyPath: m_Size.x
-      value: 0.13772911
+      value: 0.13483353
+      objectReference: {fileID: 0}
+    - target: {fileID: 7629508826163081903, guid: d2480faed4765cd45b24f3c78ecdb169, type: 3}
+      propertyPath: m_Size.y
+      value: 0.021781389
       objectReference: {fileID: 0}
     - target: {fileID: 7629508826163081903, guid: d2480faed4765cd45b24f3c78ecdb169, type: 3}
       propertyPath: m_Offset.x
-      value: 0.08370148
+      value: 0.0837492
+      objectReference: {fileID: 0}
+    - target: {fileID: 7629508826163081903, guid: d2480faed4765cd45b24f3c78ecdb169, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.0003717374
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
