@@ -68,6 +68,7 @@ public partial class PlayerMovement : MonoBehaviour
         JumpChecks();
         LandCheck();
         DashCheck();
+        CheckDashReset();
         UpdateAnimations();
     }
 
@@ -175,10 +176,11 @@ public partial class PlayerMovement : MonoBehaviour
             _isJumping = false;
             _isFalling = false;
             _isFastFalling = false;
+            _isDashFastFalling = false;
             _fastFallTime = 0f;
             _isPastApexThreshold = false;
 
-            VerticalVelocity = Physics2D.gravity.y;
+            VerticalVelocity = 0f;
         }
     }
 
@@ -193,7 +195,7 @@ public partial class PlayerMovement : MonoBehaviour
         }
         else if (_isGrounded && !_isJumping)
         {
-            VerticalVelocity = MoveStats.Gravity * Time.fixedDeltaTime;
+            VerticalVelocity = 0f;
         }
 
     }
@@ -389,6 +391,14 @@ public partial class PlayerMovement : MonoBehaviour
     }
 
 
+    private void CheckDashReset()
+    {
+        if (_isGrounded && !_isDashing && _dashOnGroundTimer <= 0f)
+        {
+            ResetDashes();
+        }
+    }
+
     private void Dash()
     {
 
@@ -397,10 +407,6 @@ public partial class PlayerMovement : MonoBehaviour
             _dashTimer += Time.fixedDeltaTime;
             if (_dashTimer > MoveStats.DashTime)
             {
-                if (_isGrounded)
-                {
-                    ResetDashes();
-                }
 
                 _isAirDashing = false;
                 _isDashing = false;
@@ -475,10 +481,7 @@ public partial class PlayerMovement : MonoBehaviour
         }
 
         // dash timer
-        if (_isGrounded)
-        {
-            _dashOnGroundTimer -= Time.deltaTime;
-        }
+        _dashOnGroundTimer -= Time.deltaTime;
     }
 
     #endregion

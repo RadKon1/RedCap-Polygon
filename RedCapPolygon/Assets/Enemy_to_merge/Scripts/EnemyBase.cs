@@ -5,8 +5,7 @@ using Random = UnityEngine.Random;
 public class EnemyBase : MonoBehaviour
 {
     [Header("Parameters")]
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int health;
+    [SerializeField] private float initialHealth = 50f;
     [SerializeField] private int damage = 15;
     [SerializeField] private float speed = 2.4f;
     [SerializeField] private float memoryDuration = 2f;
@@ -60,7 +59,11 @@ public class EnemyBase : MonoBehaviour
     
     void Awake()
     {
-        health = maxHealth;
+        Health health = GetComponent<Health>();
+        if (health != null)
+        {
+            health.InitializeHealth(initialHealth);
+        }
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
         _anim = GetComponent<Animator>();
@@ -192,7 +195,7 @@ public class EnemyBase : MonoBehaviour
     void Rotate()
     {
 
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _direction, transform.localScale.y, transform.localScale.z);
+        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * _direction, transform.localScale.y, transform.localScale.z);
     }
 
     void Attack()
@@ -209,6 +212,8 @@ public class EnemyBase : MonoBehaviour
                     isAnimationPlayed = false;
                     _attackState = AttackState.Windup;
                     _phaseTimer = 0f;
+                    hasHitPlayer = false;
+                    Debug.Log("Can hit player again");
                     isAnimationPlayed = false;
                     
                     _attackDirection = _direction;
@@ -218,7 +223,7 @@ public class EnemyBase : MonoBehaviour
                         _attackHitOffset.z
                     );
 
-                    Debug.Log("WINDUP");
+                    //Debug.Log("WINDUP");
                 }
 
                 break;
@@ -235,7 +240,7 @@ public class EnemyBase : MonoBehaviour
                     _attackState = AttackState.Active;
                     _phaseTimer = 0f;
 
-                    Debug.Log("ACTIVE");
+                    //Debug.Log("ACTIVE");
                 }
 
                 break;
@@ -248,15 +253,43 @@ public class EnemyBase : MonoBehaviour
                     0f,
                     playerMask
                 );
+                //if (hit != null && !hasHitPlayer)
+                //{
+                //    Health playerHealth = hit.GetComponent<Health>();
+
+                //    if (playerHealth != null)
+                //    {
+                //        playerHealth.TakeDamage(damage);
+                //        Debug.Log("<color=orange>GRACZ OTRZYMAŁ DMG!</color>");
+                //    }
+
+                //    hasHitPlayer = true;
+                //}
                 if (hit != null && !hasHitPlayer)
                 {
-                    PlayerTemp playerHealth = hit.GetComponent<PlayerTemp>();
+                    // LOGUJEMY CO DOKŁADNIE TRAFILIŚMY
+                    Debug.Log($"WRÓG UDERZYŁ W: {hit.gameObject.name} (Tag: {hit.gameObject.tag})");
+
+                    Health playerHealth = hit.GetComponent<Health>();
 
                     if (playerHealth != null)
                     {
                         playerHealth.TakeDamage(damage);
                     }
-
+                    else
+                    {
+                        // Sprawdźmy, czy ten obiekt ma jakiegokolwiek rodzica z Health
+                        Health parentHealth = hit.GetComponentInParent<Health>();
+                        if (parentHealth != null)
+                        {
+                            Debug.Log("Znalazłem Health na rodzicu!");
+                            parentHealth.TakeDamage(damage);
+                        }
+                        else
+                        {
+                            Debug.LogError($"BŁĄD: Obiekt {hit.gameObject.name} nie ma Health ani w sobie, ani w rodzicu!");
+                        }
+                    }
                     hasHitPlayer = true;
                 }
 
@@ -275,23 +308,29 @@ public class EnemyBase : MonoBehaviour
                     _attackState = AttackState.None;
                     _attackTimer = 0f;
                     _phaseTimer = 0f;
-                    Debug.Log("RECOVERY END");
+                    //Debug.Log("RECOVERY END");
                 }
 
                 break;
         }
     }
     
-    public void TakeDamage(int damage)
+    public void OnHit()
     {
-        health -= damage;
         _attackState = AttackState.None;
         _phaseTimer = 0f;
-        
-        // Death
-        if (health <= 0)
-            Destroy(gameObject);
+        Debug.Log("Enemy stunned");
     }
+    //public void TakeDamage(int damage)
+    //{
+    //    health -= damage;
+    //    _attackState = AttackState.None;
+    //    _phaseTimer = 0f;
+        
+    //    // Death
+    //    if (health <= 0)
+    //        Destroy(gameObject);
+    //}
 
     #region  Collision
     void GroundCheck()
@@ -393,7 +432,6 @@ public class EnemyBase : MonoBehaviour
         if (_player != null)
         {
             _lostPlayerTimer += Time.deltaTime;
-            Debug.Log("PlayerLost");
             if (_lostPlayerTimer >= memoryDuration)
             {
                 isAggresive = false;
