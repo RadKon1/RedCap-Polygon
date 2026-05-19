@@ -4,19 +4,27 @@ public class PlayerManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerStats _stats;
+    private Health _health;
 
-    private float _currentHealth;
-    private float _maxHealth;
     private float _currentXP;
     private int _currentLevel;
 
     private void Awake()
     {
-        _maxHealth = _stats.BaseMaxHealth;
-        _currentHealth = _maxHealth;
+        // initializing health based on stats
+        _health = GetComponent<Health>();
+        // reset number of coins on game start
+        _stats.NumberOfCoins = 0;
+        UpdatePlayerHealth();
+
         _currentLevel = 1;
     }
-
+    
+    private void UpdatePlayerHealth()
+    {
+        float newMax = _stats.BaseMaxHealth + (_stats.HealthPerLevel * (_currentLevel - 1));
+        _health.InitializeHealth(newMax);
+    }
     public void AddXP(float amount)
     {
         _currentXP += amount;
@@ -38,9 +46,7 @@ public class PlayerManager : MonoBehaviour
         _currentLevel++;
         _currentXP -= usedXP;
 
-        _maxHealth += _stats.HealthPerLevel;
-        _currentHealth = _maxHealth; // Full heal
-
+        UpdatePlayerHealth();
         Debug.Log($"Level Up! Current Level: {_currentLevel}");
     }
 }

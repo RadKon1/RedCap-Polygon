@@ -102,9 +102,11 @@ public class PlayerCombat : MonoBehaviour
         }
         foreach (Collider2D enemy in hitEnemies)
         {
+            Health enemyHealth = enemy.GetComponent<Health>();
             Debug.Log("Hit " + enemy.name);
-
-                //enemy.GetComponent<EnemyHealth>().TakeDamage(damage);
+            
+            enemyHealth.TakeDamage(damage);
+            Debug.Log($"Trafiono {enemy.name}! Zadano {damage} dmg.");
         }
     }
 }
