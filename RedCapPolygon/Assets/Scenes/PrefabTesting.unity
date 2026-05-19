@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b68bf5cd4ab6154e90230b1b62780bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabTesting
-  prefabToSpawn: {fileID: 5242411369446500188, guid: a2565f3b34a34d740b130c2063b6662f, type: 3}
+  prefabToSpawn: {fileID: 5242411369446500188, guid: eb2a70d3206dafc488eb67f9800507e9, type: 3}
 --- !u!1 &684049297
 GameObject:
   m_ObjectHideFlags: 0
