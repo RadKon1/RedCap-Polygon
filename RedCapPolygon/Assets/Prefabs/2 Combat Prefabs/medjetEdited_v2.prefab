@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBase
   initialHealth: 50
-  damage: 15
+  damage: 1
   speed: 2.4
   memoryDuration: 2
   groundMask:
@@ -315,3 +315,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   maxHealthFromInspector: 50
+  _uiManager: {fileID: 0}
