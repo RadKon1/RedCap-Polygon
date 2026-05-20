@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30d7740a669ccf74d80bd90d853c73bd, type: 3}
   m_Name: Player Stats
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  BaseMaxHealth: 100
+  BaseMaxHealth: 5
   HealthPerLevel: 20
   BaseDefense: 3
   BaseLuck: 1
   XpToLevelUp: 100
   XpMultiplier: 1.2
+  NumberOfCoins: 0

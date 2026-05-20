@@ -244,8 +244,14 @@ public class GridLevelGeneration : MonoBehaviour
                 List<GameObject> matchingPrefabs = new List<GameObject>();
                 foreach (RoomVariant variant in prefabsForTypes[i].Variants)
                 {
-                    // Uncomment this when enough prefabs are made
-                    // if (variant.Matches(u, d, l, r))
+                    if ((typeToFind == RoomType.Transition) || (typeToFind == RoomType.Combat))
+                    {
+                        if (variant.Matches(u, d, l, r))
+                        {
+                            matchingPrefabs.Add(variant.Prefab);
+                        }
+                    }
+                    else
                     {
                         matchingPrefabs.Add(variant.Prefab);
                     }

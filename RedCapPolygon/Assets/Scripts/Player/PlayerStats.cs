@@ -14,4 +14,7 @@ public class PlayerStats : ScriptableObject
     [Header("Leveling System")]
     public float XpToLevelUp = 100f;
     [Range(1f, 2f)] public float XpMultiplier = 1.2f;
+
+    [Header("Shop")]
+    public int NumberOfCoins = 0;
 }

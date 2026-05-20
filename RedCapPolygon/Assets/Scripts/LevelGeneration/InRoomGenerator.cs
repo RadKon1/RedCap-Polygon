@@ -31,8 +31,19 @@ public class InRoomGenerator : MonoBehaviour
             }
 
             if (Random.Range(0, 100) < socket.spawnChance)
-            {
-                int randomIndex = Random.Range(0, socket.possibleEntities.Length);
+            {   
+                int randomNum = Random.Range(0, 100);
+                int randomIndex = 0;
+                if (randomNum <= 60)
+                {
+                    randomIndex = 0;
+                }
+                else if (socket.possibleEntities.Length>1)
+                {
+                    randomIndex = 1;
+                }
+
+                // int randomIndex = Random.Range(0, socket.possibleEntities.Length);
 
                 GameObject entityToSpawn = socket.possibleEntities[randomIndex];
 
